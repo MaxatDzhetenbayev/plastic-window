@@ -1,11 +1,13 @@
-import { Container } from '@mui/material'
 import React from 'react'
 import { Outlet } from 'react-router-dom'
+import { Header } from '@widgets'
+import { Box } from '@mui/material'
 
 export const BaseLayout = () => {
   return (
-    <Container>
-        <Outlet/>
-    </Container>
+    <Box>
+      <Header />
+      <Outlet />
+    </Box>
   )
 }
