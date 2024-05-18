@@ -23,7 +23,7 @@ export const SubmitForm = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          padding: "20px 0",
+          padding: "50px 0",
           gap: "20px",
         }}
       >
