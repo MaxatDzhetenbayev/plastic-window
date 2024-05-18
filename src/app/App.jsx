@@ -1,7 +1,8 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { BaseLayout } from "./layouts/BaseLayout";
 import { Home, SignIn } from "../pages";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
   const routes = createBrowserRouter([
     {
@@ -11,15 +12,20 @@ function App() {
           path: "/",
           element: <Home />,
         },
-		  {
-			path: "/sign-in",
-			element: <SignIn />,
-		  }
+        {
+          path: "/sign-in",
+          element: <SignIn />,
+        },
       ],
     },
   ]);
 
-  return <RouterProvider router={routes} />;
+  return (
+    <>
+      <RouterProvider router={routes} />
+      <ToastContainer />
+    </>
+  );
 }
 
 export default App;
