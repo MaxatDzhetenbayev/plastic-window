@@ -1,6 +1,5 @@
 import { useAuth } from "@/shared/hooks/useAuth";
-import { Hero } from "@/widgets";
-import { SubmitForm } from "@/widgets/submit-form/ui/SubmitForm";
+import { Hero, OurAdvatages, SubmitForm } from "@/widgets";
 import { Box } from "@mui/material";
 import React from "react";
 
@@ -12,6 +11,7 @@ export const Home = () => {
     <Box>
       <Hero />
       <SubmitForm />
+      <OurAdvatages />
     </Box>
   );
 };
