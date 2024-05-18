@@ -1,79 +1,75 @@
-import React, { useState } from 'react'
-import {List, ListItem, Menu, MenuItem } from '@mui/material'
-import { Link } from 'react-router-dom'
+import React, { useState } from "react";
+import { Box, Button, Menu, MenuItem } from "@mui/material";
+import { Link } from "react-router-dom";
+import { KeyboardArrowDown } from "@mui/icons-material";
 
 
 const navList = [
-    {
-        to: '/',
-        title: 'Главная'
-    },
-    {
-        title: 'Окна',
-        children: [
-            {
-                to: '/windows/plastic',
-                title: 'Пластиковые окна'
-            },
-            {
-                to: '/windows/wooden',
-                title: 'Деревянные окна'
-            },
-            {
-                to: '/windows/aluminum',
-                title: 'Алюминиевые окна'
-            }
-        ]
-    }
-]
+  {
+    to: "/",
+    title: "Главная",
+  },
+  {
+    title: "Окна",
+    children: [
+      {
+        to: "/windows/plastic",
+        title: "Пластиковые окна",
+      },
+      {
+        to: "/windows/wooden",
+        title: "Деревянные окна",
+      },
+      {
+        to: "/windows/aluminum",
+        title: "Алюминиевые окна",
+      },
+    ],
+  },
+];
 
 const renderNavList = (list) => {
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [currentParent, setCurrentParent] = useState(null);
-    const open = Boolean(anchorEl);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
 
-    const handleMouseEnter = (event, title) => {
-        setAnchorEl(event.currentTarget);
-        setCurrentParent(title);
-    };
+  const handleOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-    const handleMouseLeave = () => {
-        setAnchorEl(null);
-        setCurrentParent(null);
-    };
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
-    return list.map(({ to, title, children }) => {
-        const isParent = children && children.length > 0;
-        return (
-            <div key={title} onMouseLeave={isParent ? handleMouseLeave : null}>
-                <ListItem onMouseEnter={isParent ? (event) => handleMouseEnter(event, title) : null}>
-                    <Link to={!isParent ? to : '#'}>{title}</Link>
-                </ListItem>
-                {isParent && currentParent === title && (
-                    <Menu
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleMouseLeave}
-                        MenuListProps={{
-                            onMouseLeave: handleMouseLeave
-                        }}
-                    >
-                        {children.map(({ to, title }) => (
-                            <MenuItem key={title} component={Link} to={to} onClick={handleMouseLeave}>
-                                {title}
-                            </MenuItem>
-                        ))}
-                    </Menu>
-                )}
-            </div>
-        );
-    });
+  return list.map(({ to, title, children }) => {
+    return (
+      <>
+        <Button
+          key={title}
+          onClick={children ? (event) => handleOpenMenu(event) : null}
+          endIcon={children ? <KeyboardArrowDown /> : null}
+          sx={{ color: "white" }}
+        >
+          <Link to={!children ? to : "#"}>{title}</Link>
+        </Button>
+        {children && (
+          <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
+            {children.map(({ to, title }) => (
+              <MenuItem
+                key={title}
+                component={Link}
+                to={to}
+                onClick={handleCloseMenu}
+              >
+                {title}
+              </MenuItem>
+            ))}
+          </Menu>
+        )}
+      </>
+    );
+  });
 };
 
 export const Navbar = () => {
-    return (
-        <List sx={{ display: "flex" }}>
-            {renderNavList(navList)}
-        </List>
-    )
-}
+  return <Box sx={{ display: "flex" }}>{renderNavList(navList)}</Box>;
+};
