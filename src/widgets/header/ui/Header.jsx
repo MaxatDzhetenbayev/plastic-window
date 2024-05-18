@@ -7,9 +7,8 @@ import {
   useTheme,
 } from "@mui/material";
 import { Logo } from "@components";
-import { Navbar } from "@entities";
+import { Navbar, DrawerNavbar } from "@entities";
 import { ProfileCard } from "@widgets/profile-card";
-import { DrawerNavbar } from "@/entities";
 
 export const Header = () => {
   const theme = useTheme();

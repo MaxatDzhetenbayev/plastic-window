@@ -7,10 +7,14 @@ import {
   IconButton,
   Collapse,
   Box,
+  Divider,
+  Avatar,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { LogoutButton } from "@/features/auth";
+import { useAuth } from "@/shared/hooks/useAuth";
 
 const navList = [
   { to: "/", title: "Главная" },
@@ -56,7 +60,7 @@ const renderNavList = (list, handleToggle, openItems) => {
 export const DrawerNavbar = () => {
   const [open, setOpen] = useState(false);
   const [openItems, setOpenItems] = useState({});
-  console.log(openItems);
+  const user = useAuth();
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -80,10 +84,24 @@ export const DrawerNavbar = () => {
       >
         <MenuIcon />
       </IconButton>
-      <Drawer anchor="left" open={open} onClose={handleClose}>
+      <Drawer anchor="right" open={open} onClose={handleClose}>
+        <List>
+          <ListItem>
+            <Link
+              to="profile"
+              style={{ display: "flex", alignItems: "center", gap: "10px" }}
+            >
+              <Avatar alt="Remy Sharp" src={user?.photoURL} />
+              Профиль
+            </Link>
+          </ListItem>
+        </List>
+        <Divider />
         <List sx={{ minWidth: "190px" }}>
           {renderNavList(navList, handleToggle, openItems)}
         </List>
+        <Divider />
+        <LogoutButton />
       </Drawer>
     </>
   );
