@@ -1,7 +1,9 @@
-import React from 'react'
+import { useAuth } from "@/shared/hooks/useAuth";
+import React from "react";
 
 export const Home = () => {
-  return (
-    <div>Главная</div>
-  )
-}
+  const user = useAuth();
+  console.log(user?.uid);
+
+  return <div>Главная</div>;
+};

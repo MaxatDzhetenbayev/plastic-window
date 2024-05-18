@@ -1,15 +1,15 @@
 import { onAuthStateChanged } from "firebase/auth";
-import { useState, useEffect } from "react";
-
+import { useState, useEffect, useLayoutEffect } from "react";
+import { auth } from "../../shared/api/firebaseConfig";
 export const useAuth = () => {
-    const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(user => {
-            setUser(user)
-        })
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setUser(user);
+    });
 
-        return () => unsubscribe()
-    }, [])
-    return user;
-}
+    return () => unsubscribe();
+  }, []);
+  return user;
+};

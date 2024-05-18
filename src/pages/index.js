@@ -1,1 +1,2 @@
-export {Home} from './Home/Home'
+export {Home} from './home/Home'
+export {SignIn} from './sign-in/SignIn'
