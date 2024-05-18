@@ -8,7 +8,7 @@ export const Header = () => {
   return (
     <AppBar position='static'>
         <Toolbar>
-            <Container sx={{display: "flex", alignItems: "center"}}>
+            <Container sx={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
                 <Logo/>
                 <Navbar/>
                 <ProfileCard/>
