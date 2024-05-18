@@ -36,7 +36,7 @@ const advantages = [
 
 export const OurAdvatages = () => {
   return (
-    <Container>
+    <Container sx={{ padding: "40px 0px" }}>
       <Box sx={{ borderLeft: "5px solid #1976d2", paddingLeft: "10px" }}>
         <Typography sx={{ color: "#BBBBBB" }} variant="body1" content="body1">
           Плюсы наших окон
