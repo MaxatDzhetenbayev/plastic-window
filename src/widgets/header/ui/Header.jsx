@@ -1,7 +1,7 @@
 import { AppBar, Container, Toolbar } from '@mui/material'
 import React from 'react'
-import { Logo } from '@components/'
-import { Navbar } from '@entities/'
+import { Logo } from '@components'
+import { Navbar } from '@entities'
 import { ProfileCard } from '@widgets/profile-card'
 
 export const Header = () => {

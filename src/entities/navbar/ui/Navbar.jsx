@@ -3,7 +3,6 @@ import { Box, Button, Menu, MenuItem } from "@mui/material";
 import { Link } from "react-router-dom";
 import { KeyboardArrowDown } from "@mui/icons-material";
 
-
 const navList = [
   {
     to: "/",
@@ -42,9 +41,8 @@ const renderNavList = (list) => {
 
   return list.map(({ to, title, children }) => {
     return (
-      <>
+      <Box key={title}>
         <Button
-          key={title}
           onClick={children ? (event) => handleOpenMenu(event) : null}
           endIcon={children ? <KeyboardArrowDown /> : null}
           sx={{ color: "white" }}
@@ -65,7 +63,7 @@ const renderNavList = (list) => {
             ))}
           </Menu>
         )}
-      </>
+      </Box>
     );
   });
 };

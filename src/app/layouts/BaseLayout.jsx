@@ -7,9 +7,7 @@ export const BaseLayout = () => {
   return (
     <Box>
       <Header />
-      <Container>
-        <Outlet />
-      </Container>
+      <Outlet />
     </Box>
   );
 };
