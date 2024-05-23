@@ -1,35 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, Menu, MenuItem } from "@mui/material";
 import { Link } from "react-router-dom";
 import { KeyboardArrowDown } from "@mui/icons-material";
+import { getWindowModels } from "@/widgets/window-information/api/windowInformationApi";
 
-const navList = [
-  {
-    to: "/",
-    title: "Главная",
-  },
-  {
-    title: "Окна",
-    children: [
-      {
-        to: "/windows/plastic",
-        title: "ARtec",
-      },
-      {
-        to: "/windows/wooden",
-        title: "Exprof",
-      },
-      {
-        to: "/windows/aluminum",
-        title: "Galwin",
-      },
-    ],
-  },
-];
+
 
 const renderNavList = (list) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
 
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -38,6 +18,7 @@ const renderNavList = (list) => {
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
+
 
   return list.map(({ to, title, children }) => {
     return (
@@ -69,5 +50,28 @@ const renderNavList = (list) => {
 };
 
 export const Navbar = () => {
+  const [windowModels, setWindowModels] = useState([])
+
+
+  useEffect(() => {
+    getWindowModels().then((data) => {
+      setWindowModels(data)
+    })
+  }, [])
+
+  const navList = [
+    {
+      to: "/",
+      title: "Главная",
+    },
+    {
+      title: "Окна",
+      children: windowModels.map(({ id, model: modelName }) => ({
+        to: `/windows/${id}`,
+        title: modelName,
+      }))
+    },
+  ];
+
   return <Box sx={{ display: "flex" }}>{renderNavList(navList)}</Box>;
 };

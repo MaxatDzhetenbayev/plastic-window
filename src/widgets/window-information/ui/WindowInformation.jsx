@@ -1,5 +1,5 @@
 import { Box, Button, Container, Typography } from '@mui/material'
-import React, { useEffect, useLayoutEffect } from 'react'
+import React, { useEffect } from 'react'
 import { getItemInfo, getWindowItems, getWindowModels } from '../api/windowInformationApi'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -32,7 +32,7 @@ export const WindowInformation = () => {
         })
     }, [model])
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         setLoading(true)
         getItemInfo(windowItems[0]?.id).then((data) => {
             setItemInfo(data)
