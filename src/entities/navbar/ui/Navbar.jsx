@@ -13,15 +13,15 @@ const navList = [
     children: [
       {
         to: "/windows/plastic",
-        title: "Пластиковые окна",
+        title: "ARtec",
       },
       {
         to: "/windows/wooden",
-        title: "Деревянные окна",
+        title: "Exprof",
       },
       {
         to: "/windows/aluminum",
-        title: "Алюминиевые окна",
+        title: "Galwin",
       },
     ],
   },
