@@ -42,7 +42,7 @@ export const Hero = () => {
               fontSize: "clamp(1.4rem, 4vw, 3rem)",
             }}
           >
-            Пластиковые окна в Алматы <br />
+            Пластиковые окна в Семее <br />
             напрямую от производителя <br />
             <Typography
               variant="h3"

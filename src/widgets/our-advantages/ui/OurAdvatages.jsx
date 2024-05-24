@@ -1,3 +1,4 @@
+import { ContainerHeading } from "@/shared/components";
 import { Box, Card, Container, Typography } from "@mui/material";
 import React from "react";
 
@@ -37,14 +38,7 @@ const advantages = [
 export const OurAdvatages = () => {
   return (
     <Container sx={{ padding: "40px 0px" }}>
-      <Box sx={{ borderLeft: "5px solid #1976d2", paddingLeft: "10px" }}>
-        <Typography sx={{ color: "#BBBBBB" }} variant="body1" content="body1">
-          Плюсы наших окон
-        </Typography>
-        <Typography variant="h4" content="h2" sx={{ fontWeight: 600 }}>
-          Плюсы наших окон
-        </Typography>
-      </Box>
+      <ContainerHeading title="Плюсы наших окон"/>
       <Typography
         variant="body1"
         content="body1"

@@ -4,6 +4,6 @@ import { Link } from 'react-router-dom'
 
 export const Logo = () => {
   return (
-    <Link to="/">Plastic Window</Link>
+    <Link to="/">Алка Пласт</Link>
   )
 }
