@@ -6,3 +6,4 @@ export { OurAdvatages } from "./our-advantages";
 export { SubmitForm } from "./submit-form";
 export { WindowInformation } from "./window-information";
 export { OurWorks } from "./our-works";
+export { Calculator } from "./calculator";
