@@ -4,12 +4,9 @@ import { Link } from "react-router-dom";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import { getWindowModels } from "@/widgets/window-information/api/windowInformationApi";
 
-
-
 const renderNavList = (list) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-
 
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -18,7 +15,6 @@ const renderNavList = (list) => {
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
-
 
   return list.map(({ to, title, children }) => {
     return (
@@ -50,14 +46,13 @@ const renderNavList = (list) => {
 };
 
 export const Navbar = () => {
-  const [windowModels, setWindowModels] = useState([])
-
+  const [windowModels, setWindowModels] = useState([]);
 
   useEffect(() => {
     getWindowModels().then((data) => {
-      setWindowModels(data)
-    })
-  }, [])
+      setWindowModels(data);
+    });
+  }, []);
 
   const navList = [
     {
@@ -69,7 +64,11 @@ export const Navbar = () => {
       children: windowModels.map(({ id, model: modelName }) => ({
         to: `/windows/${id}`,
         title: modelName,
-      }))
+      })),
+    },
+    {
+      to: "/calculator",
+      title: "Калькулятор",
     },
   ];
 

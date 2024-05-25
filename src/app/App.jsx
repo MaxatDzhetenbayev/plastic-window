@@ -1,6 +1,6 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { BaseLayout } from "./layouts/BaseLayout";
-import { Home, SignIn, Window } from "../pages";
+import { Home, SignIn, Window, WindowCalculator } from "../pages";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 function App() {
@@ -19,7 +19,11 @@ function App() {
         {
           path: "/windows/:model",
           element: <Window />,
-        }
+        },
+        {
+          path: "/calculator",
+          element: <WindowCalculator />,
+        },
       ],
     },
   ]);
