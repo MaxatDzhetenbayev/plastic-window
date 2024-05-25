@@ -45,32 +45,7 @@ const renderNavList = (list) => {
   });
 };
 
-export const Navbar = () => {
-  const [windowModels, setWindowModels] = useState([]);
-
-  useEffect(() => {
-    getWindowModels().then((data) => {
-      setWindowModels(data);
-    });
-  }, []);
-
-  const navList = [
-    {
-      to: "/",
-      title: "Главная",
-    },
-    {
-      title: "Окна",
-      children: windowModels.map(({ id, model: modelName }) => ({
-        to: `/windows/${id}`,
-        title: modelName,
-      })),
-    },
-    {
-      to: "/calculator",
-      title: "Калькулятор",
-    },
-  ];
-
+export const Navbar = ({ navList }) => {
+  console.log(navList);
   return <Box sx={{ display: "flex" }}>{renderNavList(navList)}</Box>;
 };

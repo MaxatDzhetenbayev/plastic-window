@@ -1,8 +1,16 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { BaseLayout } from "./layouts/BaseLayout";
-import { Home, SignIn, Window, WindowCalculator } from "../pages";
+import { BaseLayout, AdminLayout, ManagerLayout } from "./layouts";
+import {
+  Home,
+  SignIn,
+  Window,
+  WindowCalculator,
+  Admin,
+  SignUp,
+} from "../pages";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Manager } from "@/pages/manager/Manager";
 function App() {
   const routes = createBrowserRouter([
     {
@@ -17,12 +25,34 @@ function App() {
           element: <SignIn />,
         },
         {
+          path: "/sign-up",
+          element: <SignUp />,
+        },
+        {
           path: "/windows/:model",
           element: <Window />,
         },
         {
           path: "/calculator",
           element: <WindowCalculator />,
+        },
+      ],
+    },
+    {
+      element: <AdminLayout />,
+      children: [
+        {
+          path: "/admin",
+          element: <Admin />,
+        },
+      ],
+    },
+    {
+      element: <ManagerLayout />,
+      children: [
+        {
+          path: "/manager",
+          element: <Manager />,
         },
       ],
     },

@@ -1,17 +1,16 @@
-import { GoogleLoginButton } from "@/features/auth";
-import { auth } from "@/shared/api/firebaseConfig";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { fetchCreateAccount } from "../api/SignUpFormApi";
+import { useNavigate } from "react-router-dom";
 
-export const SignInForm = () => {
+export const SignUpForm = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const fetchSignIn = async (email, password) => {
-    await signInWithEmailAndPassword(auth, email, password);
-    return Navigate("/");
+  const handleCreateAccaunt = async (email, password) => {
+    await fetchCreateAccount(email, password);
+    return navigate("/");
   };
 
   return (
@@ -23,13 +22,7 @@ export const SignInForm = () => {
       }}
     >
       <Container maxWidth="sm">
-        <Typography variant="h3">Авторизация</Typography>
-        <Typography variant="body1">
-          или{" "}
-          <Link to="/sign-up" style={{ color: "#1976d2", fontWeight: "600" }}>
-            Создать новый аккаунт
-          </Link>
-        </Typography>
+        <Typography variant="h3">Регистрация</Typography>
         <Box
           sx={{
             display: "flex",
@@ -39,15 +32,14 @@ export const SignInForm = () => {
           }}
         >
           <TextField
-            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
           />
-
           <TextField
-            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
           />
         </Box>
         <Box
@@ -60,16 +52,12 @@ export const SignInForm = () => {
           }}
         >
           <Button
+            onClick={() => handleCreateAccaunt(email, password)}
             variant="contained"
-            onClick={() => fetchSignIn(email, password)}
           >
-            Войти
+            Зарегестрироваться
           </Button>
-          <GoogleLoginButton />
         </Box>
-        <Link style={{ color: "#1976d2", fontWeight: "500" }}>
-          Забыли пароль?
-        </Link>
       </Container>
     </Box>
   );

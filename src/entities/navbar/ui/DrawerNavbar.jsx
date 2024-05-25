@@ -16,18 +16,6 @@ import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { LogoutButton } from "@/features/auth";
 import { useAuth } from "@/shared/hooks/useAuth";
 
-const navList = [
-  { to: "/", title: "Главная" },
-  {
-    title: "Окна",
-    children: [
-      { to: "/windows/plastic", title: "Пластиковые окна" },
-      { to: "/windows/wooden", title: "Деревянные окна" },
-      { to: "/windows/aluminum", title: "Алюминиевые окна" },
-    ],
-  },
-];
-
 const renderNavList = (list, handleToggle, openItems) => {
   return list.map(({ to, title, children }) => {
     const isOpen = openItems[title] || false;
@@ -57,7 +45,7 @@ const renderNavList = (list, handleToggle, openItems) => {
   });
 };
 
-export const DrawerNavbar = () => {
+export const DrawerNavbar = ({ navList }) => {
   const [open, setOpen] = useState(false);
   const [openItems, setOpenItems] = useState({});
   const user = useAuth();

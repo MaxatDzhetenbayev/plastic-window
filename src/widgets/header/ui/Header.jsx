@@ -10,10 +10,9 @@ import { Logo } from "@components";
 import { Navbar, DrawerNavbar } from "@entities";
 import { ProfileCard } from "@widgets/profile-card";
 
-export const Header = () => {
+export const Header = ({ navList }) => {
   const theme = useTheme();
   const isModile = useMediaQuery(theme.breakpoints.down("md"));
-
 
   return (
     <AppBar position="static">
@@ -27,10 +26,10 @@ export const Header = () => {
         >
           <Logo />
           {isModile ? (
-            <DrawerNavbar />
+            <DrawerNavbar navList={navList} />
           ) : (
             <>
-              <Navbar />
+              <Navbar navList={navList} />
               <ProfileCard />
             </>
           )}
