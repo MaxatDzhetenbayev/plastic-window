@@ -10,7 +10,9 @@ export const ProfileCard = () => {
     <Box>
       {user?.uid ? (
         <Box sx={{ display: "flex", alignItems: "center", gap: "15px" }}>
-          <Typography>Добро пожаловать, {user?.displayName}</Typography>
+          <Typography>
+            Добро пожаловать, {user?.displayName || user?.email}
+          </Typography>
           <UserAvatar avatarImage={user.photoURL} />
         </Box>
       ) : (

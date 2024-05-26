@@ -7,6 +7,7 @@ import {
   WindowCalculator,
   Admin,
   SignUp,
+  Profile,
 } from "../pages";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -35,6 +36,10 @@ function App() {
         {
           path: "/calculator",
           element: <WindowCalculator />,
+        },
+        {
+          path: "/profile",
+          element: <Profile />,
         },
       ],
     },

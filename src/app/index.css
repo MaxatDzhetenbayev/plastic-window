@@ -4,13 +4,14 @@
   font-weight: 400;
 }
 
-*{
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-a{
+a {
   text-decoration: none;
   color: inherit;
+  /* color: #dddddd; */
 }

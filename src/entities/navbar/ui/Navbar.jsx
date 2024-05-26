@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Box, Button, Menu, MenuItem } from "@mui/material";
 import { Link } from "react-router-dom";
 import { KeyboardArrowDown } from "@mui/icons-material";
-import { getWindowModels } from "@/widgets/window-information/api/windowInformationApi";
 
 const renderNavList = (list) => {
   const [anchorEl, setAnchorEl] = useState(null);
