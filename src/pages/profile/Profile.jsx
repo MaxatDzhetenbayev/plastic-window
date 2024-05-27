@@ -2,7 +2,9 @@ import { db } from "@/shared/api/firebaseConfig";
 import { useAuth } from "@/shared/hooks/useAuth";
 import {
   Box,
+  Collapse,
   Container,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -10,6 +12,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { collection, doc, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 
@@ -42,7 +45,7 @@ export const Profile = () => {
     fetchGetUserOrders(userId);
   }, [userId]);
 
-  const parseStatus = (status) => {
+  const renderStatus = (status) => {
     switch (status) {
       case "new":
         return "В обработке";
@@ -55,6 +58,34 @@ export const Profile = () => {
       default:
         return "В обработке";
     }
+  };
+
+  const CustumRow = ({ orderItem }) => {
+    const [open, setOpen] = useState(false);
+
+    return (
+      <>
+        <TableRow>
+          <TableCell>
+            <IconButton onClick={() => setOpen(!open)}>
+              {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+            </IconButton>
+          </TableCell>
+          <TableCell>{orderItem.id}</TableCell>
+          <TableCell>{orderItem.date}</TableCell>
+          <TableCell>{renderStatus(orderItem.status)}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+            <Collapse in={open}>
+              <Box sx={{ padding: "20px" }}>
+                <Typography textAlign="center">Нет информации</Typography>
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      </>
+    );
   };
 
   return (
@@ -80,18 +111,15 @@ export const Profile = () => {
                     <TableCell>Мои заказы</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell># Заказа</TableCell>
+                    <TableCell />
+                    <TableCell>ID Заказа</TableCell>
                     <TableCell>Дата</TableCell>
                     <TableCell>Статус</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {orders.map((order) => (
-                    <TableRow key={order.id}>
-                      <TableCell>{order.id}</TableCell>
-                      <TableCell>{order.date}</TableCell>
-                      <TableCell>{parseStatus(order.status)}</TableCell>
-                    </TableRow>
+                    <CustumRow orderItem={order} />
                   ))}
                 </TableBody>
               </Table>

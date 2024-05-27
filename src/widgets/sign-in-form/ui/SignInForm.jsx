@@ -1,11 +1,13 @@
 import { GoogleLoginButton } from "@/features/auth";
 import { auth } from "@/shared/api/firebaseConfig";
+import { useAuth } from "@/shared/hooks/useAuth";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export const SignInForm = () => {
+  const user = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -13,6 +15,26 @@ export const SignInForm = () => {
   const fetchSignIn = async (email, password) => {
     await signInWithEmailAndPassword(auth, email, password);
     return navigate("/");
+  };
+
+  const handleNavigateForRole = (role) => {
+    if (role === "admin") {
+      return navigate("/admin");
+    }
+    if (role === "manager") {
+      return navigate("/manager");
+    }
+    return navigate("/");
+  };
+
+  const handleSignIn = async (email, password) => {
+    try {
+      await fetchSignIn(email, password);
+
+      handleNavigateForRole(user.role);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -62,7 +84,7 @@ export const SignInForm = () => {
         >
           <Button
             variant="contained"
-            onClick={() => fetchSignIn(email, password)}
+            onClick={() => handleSignIn(email, password)}
           >
             Войти
           </Button>
