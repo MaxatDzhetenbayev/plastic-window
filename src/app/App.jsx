@@ -1,5 +1,5 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { BaseLayout, AdminLayout, ManagerLayout } from "./layouts";
+import { BaseLayout, AdminLayout } from "./layouts";
 import {
   Home,
   SignIn,
@@ -11,7 +11,7 @@ import {
 } from "../pages";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Manager } from "@/pages/manager/Manager";
+import { AdminRequest } from "@/pages/admin-request/AdminRequest";
 function App() {
   const routes = createBrowserRouter([
     {
@@ -50,14 +50,9 @@ function App() {
           path: "/admin",
           element: <Admin />,
         },
-      ],
-    },
-    {
-      element: <ManagerLayout />,
-      children: [
         {
-          path: "/manager",
-          element: <Manager />,
+          path: "/admin/request",
+          element: <AdminRequest />,
         },
       ],
     },

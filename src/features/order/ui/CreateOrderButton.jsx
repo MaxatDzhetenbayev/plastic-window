@@ -5,12 +5,14 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import axios from "axios";
 
-export const CreateOrderButton = ({  itemId }) => {
+export const CreateOrderButton = ({ itemId }) => {
   const [open, setOpen] = useState(false);
   const [fullname, setFullname] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [measurementDate, setMeasurementDate] = useState(null);
+
+  console.log(measurementDate);
 
   const handleOpen = () => {
     setOpen(true);
@@ -20,28 +22,29 @@ export const CreateOrderButton = ({  itemId }) => {
     setOpen(false);
   };
 
-
   const fetchCreateRequest = async () => {
-    const response = await axios.post(`http://localhost:3000/user-requests`, {
-      fullname,
-      phone,
-      address,
-      detail: {
-        measurement_date: measurementDate,
-        item_id:  itemId,
-        options: {}
+    const response = await axios.post(
+      `http://localhost:3000/user-requests`,
+      {
+        fullname,
+        phone,
+        address,
+        detail: {
+          measurement_date: measurementDate,
+          item_id: itemId,
+          options: {},
+        },
+      },
+      {
+        withCredentials: true,
       }
-     
-    }, {
-      withCredentials: true
-    });
+    );
     console.log(response.data);
-  }
+  };
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    fetchCreateRequest()
+    fetchCreateRequest();
   };
 
   return (

@@ -8,10 +8,10 @@ import { CreateOrderButton } from "@/features/order";
 
 export const WindowInformation = () => {
   const { model } = useParams();
-const [currentTabId, setCurrentTabId] = useState(null)
+  const [currentTabId, setCurrentTabId] = useState(null);
   const fetchWindows = async () => {
     const response = await axios.get(`http://localhost:3000/windows/${model}`);
-    console.log(response.data)
+    console.log(response.data);
     return response.data;
   };
 
@@ -22,16 +22,14 @@ const [currentTabId, setCurrentTabId] = useState(null)
 
   const [itemInfo, setItemInfo] = useState(null);
 
-
   useEffect(() => {
     setItemInfo(window?.items[0]);
-    setCurrentTabId(window?.items[0].id)
+    setCurrentTabId(window?.items[0].id);
   }, [window]);
   const handleItemInfo = (id) => {
-    setCurrentTabId(id)
+    setCurrentTabId(id);
     setItemInfo(window?.items.find((item) => item.id === id));
   };
-
 
   return (
     <Container>
@@ -62,8 +60,7 @@ const [currentTabId, setCurrentTabId] = useState(null)
           <Button
             key={id}
             variant="outlined"
-            color={ currentTabId === id ?  "secondary": "primary"}
-
+            color={currentTabId === id ? "secondary" : "primary"}
             onClick={() => handleItemInfo(id)}
           >
             {name}
