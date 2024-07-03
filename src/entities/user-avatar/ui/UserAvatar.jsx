@@ -1,10 +1,14 @@
+import { logoutRequest } from "@/features/auth/api/auth";
 import { Avatar, Menu, MenuItem, Typography } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
 
+
+
 export const UserAvatar = ({ avatarImage }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  // const { mutate: logout } = useLogout();
 
   const menuList = [
     {
@@ -13,7 +17,7 @@ export const UserAvatar = ({ avatarImage }) => {
     },
     {
       title: "Logout",
-      callback: () => {},
+      callback: logoutRequest,
     },
   ];
 

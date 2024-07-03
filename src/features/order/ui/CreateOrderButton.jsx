@@ -1,16 +1,16 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { Modal } from "@components/index";
-import { useAuth } from "@/shared/hooks/useAuth";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import axios from "axios";
 
-export const CreateOrderButton = ({ windowId }) => {
+export const CreateOrderButton = ({  itemId }) => {
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState("");
+  const [fullname, setFullname] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [date, setDate] = useState(null);
+  const [measurementDate, setMeasurementDate] = useState(null);
 
   const handleOpen = () => {
     setOpen(true);
@@ -20,30 +20,28 @@ export const CreateOrderButton = ({ windowId }) => {
     setOpen(false);
   };
 
-  //   const fetchCreateOrder = async (userId, windowId, name, phone) => {
-  //     try {
-  //       const userDoc = doc(db, "users", userId);
 
-  //       const ordersCollectionRef = collection(userDoc, "orders");
+  const fetchCreateRequest = async () => {
+    const response = await axios.post(`http://localhost:3000/user-requests`, {
+      fullname,
+      phone,
+      address,
+      detail: {
+        measurement_date: measurementDate,
+        item_id:  itemId,
+        options: {}
+      }
+     
+    }, {
+      withCredentials: true
+    });
+    console.log(response.data);
+  }
 
-  //       const data = {
-  //         userId,
-  //         window: windowId,
-  //         status: "new",
-  //         options: null,
-  //         name,
-  //         phone,
-  //       };
-
-  //       await addDoc(ordersCollectionRef, data);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    //  fetchCreateOrder(userId, windowId, name, phone);
+    fetchCreateRequest()
   };
 
   return (
@@ -83,8 +81,8 @@ export const CreateOrderButton = ({ windowId }) => {
               <TextField
                 label="Полное имя"
                 variant="outlined"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
               />
               <TextField
                 label="Телефон"
@@ -93,7 +91,7 @@ export const CreateOrderButton = ({ windowId }) => {
                 onChange={(e) => setPhone(e.target.value)}
               />
               <TextField
-                label="Адрес доставки"
+                label="Адрес проживания"
                 variant="outlined"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
@@ -101,8 +99,8 @@ export const CreateOrderButton = ({ windowId }) => {
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label="Дата замера"
-                  value={date}
-                  onChange={(newValue) => setDate(newValue)}
+                  value={measurementDate}
+                  onChange={(newValue) => setMeasurementDate(newValue)}
                 />
               </LocalizationProvider>
               <Button variant="contained" type="submit">

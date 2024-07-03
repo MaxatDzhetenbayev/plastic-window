@@ -16,30 +16,30 @@ export const GiveRole = () => {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
 
-  useEffect(() => {
-    setLoading(true);
-    const userRef = collection(db, "users");
-    const unsubscribe = onSnapshot(userRef, (snapshot) => {
-      const usersList = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setUsers(usersList);
-      setLoading(false);
-    });
+  // useEffect(() => {
+  //   setLoading(true);
+  //   const userRef = collection(db, "users");
+  //   const unsubscribe = onSnapshot(userRef, (snapshot) => {
+  //     const usersList = snapshot.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }));
+  //     setUsers(usersList);
+  //     setLoading(false);
+  //   });
 
-    return () => unsubscribe();
-  }, []);
+  //   return () => unsubscribe();
+  // }, []);
 
-  const fetchChangeRole = async (userId, role) => {
-    const userDocRef = doc(db, "users", userId);
+  // const fetchChangeRole = async (userId, role) => {
+  //   const userDocRef = doc(db, "users", userId);
 
-    await updateDoc(userDocRef, {
-      role,
-    });
-  };
+  //   await updateDoc(userDocRef, {
+  //     role,
+  //   });
+  // };
 
-  if (loading) return <Typography>Загрузка...</Typography>;
+  // if (loading) return <Typography>Загрузка...</Typography>;
 
   return (
     <Container>

@@ -14,14 +14,20 @@ export const signInWithGoogle = async () => {
   }
 };
 
-const logoutRequest = async () => {
-  await axios.post(
-    "http://localhost:3000/auth/logout",
-    {},
-    {
-      withCredentials: true,
-    }
-  );
+export const logoutRequest = async () => {
+  try {
+    await axios.post(
+      "http://localhost:3000/auth/logout",
+      {},
+      {
+        withCredentials: true,
+      }
+    );
+    localStorage.removeItem("user");
+  } catch (error) {
+    console.error("Error signing out", error);
+  }
+ 
 };
 
 export const useLogout = () => {

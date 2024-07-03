@@ -8,24 +8,31 @@ import { CreateOrderButton } from "@/features/order";
 
 export const WindowInformation = () => {
   const { model } = useParams();
-  const navigate = useNavigate();
-
+const [currentTabId, setCurrentTabId] = useState(null)
   const fetchWindows = async () => {
     const response = await axios.get(`http://localhost:3000/windows/${model}`);
+    console.log(response.data)
     return response.data;
   };
 
   const { data: window, isLoading } = useQuery({
-    queryKey: ["window"],
+    queryKey: ["window", model],
     queryFn: fetchWindows,
   });
 
   const [itemInfo, setItemInfo] = useState(null);
 
+
   useEffect(() => {
     setItemInfo(window?.items[0]);
+    setCurrentTabId(window?.items[0].id)
   }, [window]);
-  console.log(itemInfo);
+  const handleItemInfo = (id) => {
+    setCurrentTabId(id)
+    setItemInfo(window?.items.find((item) => item.id === id));
+  };
+
+
   return (
     <Container>
       <Typography variant="h2" sx={{ textAlign: "center", marginTop: "30px" }}>
@@ -55,7 +62,8 @@ export const WindowInformation = () => {
           <Button
             key={id}
             variant="outlined"
-            color="primary"
+            color={ currentTabId === id ?  "secondary": "primary"}
+
             onClick={() => handleItemInfo(id)}
           >
             {name}
@@ -194,7 +202,7 @@ export const WindowInformation = () => {
                 <Typography sx={{ mt: "30px" }}>
                   Цена: {Number(itemInfo.price).toLocaleString()}тг.
                 </Typography>
-                <CreateOrderButton windowId={itemInfo.id} />
+                <CreateOrderButton itemId={currentTabId} />
               </Box>
             </Box>
           </Box>
