@@ -45,6 +45,5 @@ const renderNavList = (list) => {
 };
 
 export const Navbar = ({ navList }) => {
-  console.log(navList);
   return <Box sx={{ display: "flex" }}>{renderNavList(navList)}</Box>;
 };

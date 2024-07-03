@@ -8,12 +8,12 @@ export const ProfileCard = () => {
 
   return (
     <Box>
-      {user?.uid ? (
+      {user ? (
         <Box sx={{ display: "flex", alignItems: "center", gap: "15px" }}>
           <Typography>
-            Добро пожаловать, {user?.displayName || user?.email}
+            Добро пожаловать, {user?.username || user?.email}
           </Typography>
-          <UserAvatar avatarImage={user.photoURL} />
+          <UserAvatar avatarImage={user.image} />
         </Box>
       ) : (
         <Box>

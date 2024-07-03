@@ -1,5 +1,4 @@
-import { logout } from "@/features/auth";
-import { Avatar, Button, Menu, MenuItem, Typography } from "@mui/material";
+import { Avatar, Menu, MenuItem, Typography } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -14,7 +13,7 @@ export const UserAvatar = ({ avatarImage }) => {
     },
     {
       title: "Logout",
-      callback: logout,
+      callback: () => {},
     },
   ];
 

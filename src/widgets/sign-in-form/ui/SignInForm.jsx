@@ -2,20 +2,36 @@ import { GoogleLoginButton } from "@/features/auth";
 import { auth } from "@/shared/api/firebaseConfig";
 import { useAuth } from "@/shared/hooks/useAuth";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export const SignInForm = () => {
   const user = useAuth();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const fetchSignIn = async (email, password) => {
-    await signInWithEmailAndPassword(auth, email, password);
-    return navigate("/");
+  const loginUser = async (user) => {
+    try {
+      const { data } = await axios.post(
+        "http://localhost:3000/auth/login",
+        user,
+        { withCredentials: true }
+      );
+      return data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   };
+
+  const { mutate, isPending, isError, isSuccess } = useMutation({
+    mutationFn: loginUser,
+    onSuccess: () => navigate("/"),
+  });
 
   const handleNavigateForRole = (role) => {
     if (role === "admin") {
@@ -25,16 +41,6 @@ export const SignInForm = () => {
       return navigate("/manager");
     }
     return navigate("/");
-  };
-
-  const handleSignIn = async (email, password) => {
-    try {
-      await fetchSignIn(email, password);
-
-      handleNavigateForRole(user.role);
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   return (
@@ -62,9 +68,9 @@ export const SignInForm = () => {
           }}
         >
           <TextField
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            placeholder="User Name"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
 
           <TextField
@@ -84,7 +90,7 @@ export const SignInForm = () => {
         >
           <Button
             variant="contained"
-            onClick={() => handleSignIn(email, password)}
+            onClick={() => mutate({ username, password })}
           >
             Войти
           </Button>

@@ -1,21 +1,41 @@
-import { auth, googleProvider } from '../../../shared/api/firebaseConfig';
-import { signInWithPopup, signOut } from 'firebase/auth';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { auth, googleProvider } from "../../../shared/api/firebaseConfig";
+import { signInWithPopup } from "firebase/auth";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const signInWithGoogle = async () => {
-    try {
-        const result = await signInWithPopup(auth, googleProvider);
-        return result.user;
-    } catch (error) {
-        console.error('Error signing in with Google', error);
-        throw error;
-    }
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    return result.user;
+  } catch (error) {
+    console.error("Error signing in with Google", error);
+    throw error;
+  }
 };
 
-export const logout = async () => {
-    try {
-        await signOut(auth);
-    } catch (error) {
-        console.error('Error signing out', error);
-        throw error;
+const logoutRequest = async () => {
+  await axios.post(
+    "http://localhost:3000/auth/logout",
+    {},
+    {
+      withCredentials: true,
     }
+  );
+};
+
+export const useLogout = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  return useMutation(logoutRequest, {
+    onSuccess: () => {
+      queryClient.clear();
+      localStorage.removeItem("user");
+      navigate("/login");
+    },
+    onError: (error) => {
+      console.error("Error signing out", error);
+    },
+  });
 };

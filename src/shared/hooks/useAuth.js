@@ -1,29 +1,39 @@
-import { useState, useEffect } from "react";
-import { auth, db } from "../../shared/api/firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
+import {useEffect } from "react";
+
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+
+const fetchUser = async () => {
+  const response = await axios.get("http://localhost:3000/auth/profile", {
+    withCredentials: true,
+  });
+  return response.data;
+};
+
 export const useAuth = () => {
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("user");
-    return savedUser ? JSON.parse(savedUser) : null;
+  const {
+    data: user,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["user"],
+    queryFn: fetchUser,
+    staleTime: 60 * 60 * 1000, // 60 минут
+    cacheTime: 120 * 60 * 1000, // 120 минут
+    onSuccess: (data) => {
+      localStorage.setItem("user", JSON.stringify(data));
+    },
+    onError: () => {
+      localStorage.removeItem("user");
+    },
   });
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
-      if (authUser) {
-        const userDoc = doc(db, "users", authUser.uid);
-        const userData = await getDoc(userDoc);
-        const updatedUser = {
-          ...authUser,
-          role: userData.exists() ? userData.data().role : null,
-        };
-        setUser(updatedUser);
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-      } else {
-        localStorage.removeItem("user");
-        setUser(null);
-      }
-    });
-    return () => unsubscribe();
-  }, []);
+    const savedUser = localStorage.getItem("user");
+    if (!user && savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+  }, [user]);
+
   return user;
 };

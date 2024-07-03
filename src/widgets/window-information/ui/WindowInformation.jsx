@@ -1,65 +1,38 @@
 import { Box, Button, Container, Typography } from "@mui/material";
-import React, { useEffect } from "react";
-import {
-  getItemInfo,
-  getWindowItems,
-  getWindowModels,
-} from "../api/windowInformationApi";
+import React, { useEffect, useState } from "react";
+
 import { useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { CreateOrderButton } from "@/features/order";
 
 export const WindowInformation = () => {
   const { model } = useParams();
   const navigate = useNavigate();
 
-  const [windowModels, setWindowModels] = React.useState([]);
-  const [windowItems, setWindowItems] = React.useState([]);
-  const [itemInfo, setItemInfo] = React.useState(null);
-  const [modelDescription, setModelDescription] = React.useState("");
-  const [loading, setLoading] = React.useState(true);
-
-  useEffect(() => {
-    getWindowModels().then((data) => {
-      setWindowModels(data);
-    });
-  }, []);
-
-  useEffect(() => {
-    setModelDescription(
-      windowModels.find(({ id }) => id === model)?.description
-    );
-  }, [windowModels, model]);
-
-  useEffect(() => {
-    getWindowItems(model).then((data) => {
-      setWindowItems(data);
-    });
-  }, [model]);
-
-  useEffect(() => {
-    setLoading(true);
-    getItemInfo(windowItems[0]?.id).then((data) => {
-      setItemInfo(data);
-    });
-    setLoading(false);
-  }, [windowItems]);
-
-  const handleModelChoice = async (modelId) => {
-    navigate(`/windows/${modelId}`);
+  const fetchWindows = async () => {
+    const response = await axios.get(`http://localhost:3000/windows/${model}`);
+    return response.data;
   };
 
-  const handleItemInfo = async (itemId) => {
-    const item = await getItemInfo(itemId);
-    setItemInfo(item);
-  };
+  const { data: window, isLoading } = useQuery({
+    queryKey: ["window"],
+    queryFn: fetchWindows,
+  });
 
+  const [itemInfo, setItemInfo] = useState(null);
+
+  useEffect(() => {
+    setItemInfo(window?.items[0]);
+  }, [window]);
+  console.log(itemInfo);
   return (
     <Container>
       <Typography variant="h2" sx={{ textAlign: "center", marginTop: "30px" }}>
         {String(`Пластиковые окна`).toLocaleUpperCase()}
       </Typography>
       <Box sx={{ display: "flex", justifyContent: "center", gap: "10px" }}>
-        {windowModels.map(({ id, model: modelName }) => (
+        {/* {windowModels.map(({ id, model: modelName }) => (
           <Button
             key={id}
             variant="contained"
@@ -68,7 +41,7 @@ export const WindowInformation = () => {
           >
             {modelName}
           </Button>
-        ))}
+        ))} */}
       </Box>
       <Box
         sx={{
@@ -78,18 +51,18 @@ export const WindowInformation = () => {
           marginTop: "20px",
         }}
       >
-        {windowItems.map(({ id, title }) => (
+        {window?.items.map(({ id, name }) => (
           <Button
             key={id}
             variant="outlined"
             color="primary"
             onClick={() => handleItemInfo(id)}
           >
-            {title}
+            {name}
           </Button>
         ))}
       </Box>
-      {loading ? (
+      {isLoading ? (
         <Typography>Загрузка...</Typography>
       ) : itemInfo ? (
         <>
@@ -98,7 +71,7 @@ export const WindowInformation = () => {
               variant="h4"
               sx={{ fontWeight: "600", textAlign: "center" }}
             >
-              {itemInfo.title}
+              {itemInfo.name}
             </Typography>
             <Box
               sx={{
@@ -135,7 +108,7 @@ export const WindowInformation = () => {
                               height: "20px",
                               width: "8px",
                               backgroundColor: () =>
-                                index < itemInfo?.characteristic?.thernal
+                                index < itemInfo.characteristics.thermal
                                   ? "red"
                                   : "grey",
                             }}
@@ -162,8 +135,7 @@ export const WindowInformation = () => {
                               height: "20px",
                               width: "8px",
                               backgroundColor: () =>
-                                index <
-                                itemInfo?.characteristic?.noise_insulation
+                                index < itemInfo.characteristics.noise
                                   ? "red"
                                   : "grey",
                             }}
@@ -190,7 +162,7 @@ export const WindowInformation = () => {
                               height: "20px",
                               width: "8px",
                               backgroundColor: () =>
-                                index < itemInfo?.characteristic?.design
+                                index < itemInfo.characteristics.design
                                   ? "red"
                                   : "grey",
                             }}
@@ -202,7 +174,7 @@ export const WindowInformation = () => {
               </Box>
               <Box sx={{ flex: 2, display: "flex", flexDirection: "column" }}>
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
-                  {itemInfo?.feauters?.map(({ id, description, title }) => (
+                  {itemInfo.features?.map(({ id, description, title }) => (
                     <Box
                       key={id}
                       sx={{
@@ -220,7 +192,7 @@ export const WindowInformation = () => {
                   ))}
                 </Box>
                 <Typography sx={{ mt: "30px" }}>
-                  Цена: {Number(itemInfo.price).toLocaleString()} Т
+                  Цена: {Number(itemInfo.price).toLocaleString()}тг.
                 </Typography>
                 <CreateOrderButton windowId={itemInfo.id} />
               </Box>
@@ -228,7 +200,7 @@ export const WindowInformation = () => {
           </Box>
           <Box sx={{ marginTop: "50px" }}>
             <Typography sx={{ textAlign: "justify" }}>
-              {modelDescription}
+              {window.description}
             </Typography>
           </Box>
         </>

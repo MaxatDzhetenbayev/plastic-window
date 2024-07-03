@@ -1,9 +1,11 @@
 import React from "react";
-import { logout } from "../../api/auth";
-import { Button, Typography } from "@mui/material";
+import { useLogout } from "../../api/auth";
+import { Button } from "@mui/material";
 export const LogoutButton = () => {
+  const { mutate: logout } = useLogout();
+
   return (
-    <Button variant="text" sx={{ color: "#ff0000" }} onClick={logout}>
+    <Button variant="text" sx={{ color: "#ff0000" }} onClick={() => {}}>
       Выйти
     </Button>
   );
