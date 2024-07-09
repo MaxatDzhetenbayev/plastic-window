@@ -55,9 +55,6 @@ export const AdminRequest = () => {
     enabled: !!status,
   });
 
-  //   console.log(randomCreatedDate());
-  //   console.log(new Date(data[0]?.detail.measurement_date));
-
   const transformedData =
     data?.map((request) => ({
       ...request,

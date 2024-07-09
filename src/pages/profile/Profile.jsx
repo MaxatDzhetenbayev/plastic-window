@@ -1,4 +1,3 @@
-import { db } from "@/shared/api/firebaseConfig";
 import { useAuth } from "@/shared/hooks/useAuth";
 import {
   Box,
@@ -13,46 +12,68 @@ import {
   Typography,
 } from "@mui/material";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
-import { collection, doc, getDocs } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import { Payment } from "@widgets/payment/ui/Payment";
+
+const stripePromise = loadStripe(
+  "pk_test_51PZzt1Ano0RJV2sOyNXjUHN552ymUjoMcj4qC66aLzrjwevssMJWzqELG4rOJulKZsbRX6o0piLMkKcH1HvsCRaO00wtxBsbR8"
+);
 
 export const Profile = () => {
   const user = useAuth();
-  const userId = user?.uid;
-
-  const [loading, setLoading] = useState(true);
-  const [orders, setOrders] = useState([]);
-
-  const fetchGetUserOrders = async (userId) => {
-    setLoading(true);
-    try {
-      const userDoc = doc(db, "users", userId);
-      const ordersCollectionRef = collection(userDoc, "orders");
-      const ordersSnapshot = await getDocs(ordersCollectionRef);
-      const ordersData = ordersSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setOrders(ordersData);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const [clientSecret, setClientSecret] = useState("");
 
   useEffect(() => {
-    fetchGetUserOrders(userId);
-  }, [userId]);
+    const fetchClientSecret = async () => {
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/payment/intent",
+          {
+            amount: 5000,
+          },
+          {
+            withCredentials: true,
+          }
+        );
+        setClientSecret(response.data.clientSecret);
+      } catch (error) {
+        console.error("Ошибка при получении clientSecret: ", error);
+      }
+    };
+
+    fetchClientSecret();
+  }, []);
+
+  const { data, isLoading } = useQuery({
+    queryFn: async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/user-requests/user`,
+          {
+            withCredentials: true,
+          }
+        );
+        return response.data;
+      } catch (error) {
+        console.log("Error detail: " + error);
+        return [];
+      }
+    },
+    queryKey: ["requests"],
+  });
 
   const renderStatus = (status) => {
     switch (status) {
-      case "new":
+      case "pending":
         return "В обработке";
+      case "preparing":
+        return "Ожидание оплаты";
       case "work":
         return "В работе";
-      case "payment_pending":
-        return "ожидание оплаты";
       case "done":
         return "Завершен";
       default:
@@ -72,14 +93,17 @@ export const Profile = () => {
             </IconButton>
           </TableCell>
           <TableCell>{orderItem.id}</TableCell>
-          <TableCell>{orderItem.date}</TableCell>
-          <TableCell>{renderStatus(orderItem.status)}</TableCell>
+          <TableCell>
+            {new Date(orderItem.createdAt).toLocaleDateString()}
+          </TableCell>
+          <TableCell>{renderStatus(orderItem.detail.status)}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
             <Collapse in={open}>
               <Box sx={{ padding: "20px" }}>
-                <Typography textAlign="center">Нет информации</Typography>
+                <Typography textAlign="center"></Typography>
+                {orderItem.detail.status}
               </Box>
             </Collapse>
           </TableCell>
@@ -89,44 +113,49 @@ export const Profile = () => {
   };
 
   return (
-    <Box>
-      <Container>
+    clientSecret && (
+      <Elements stripe={stripePromise} options={{ clientSecret }}>
         <Box>
-          <Typography variant="h4" sx={{ marginTop: "50px" }}>
-            Личный кабинет
-          </Typography>
-          <Box
-            sx={{
-              borderRadius: "2px",
-              border: `1px solid #dddddd`,
-              marginTop: "20px",
-            }}
-          >
-            {loading ? (
-              <Typography>Загрузка...</Typography>
-            ) : (
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Мои заказы</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell />
-                    <TableCell>ID Заказа</TableCell>
-                    <TableCell>Дата</TableCell>
-                    <TableCell>Статус</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {orders.map((order) => (
-                    <CustumRow orderItem={order} />
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </Box>
+          <Container>
+            <Box>
+              <Typography variant="h4" sx={{ marginTop: "50px" }}>
+                Личный кабинет
+              </Typography>
+              <Box
+                sx={{
+                  borderRadius: "2px",
+                  border: `1px solid #dddddd`,
+                  marginTop: "20px",
+                }}
+              >
+                {isLoading ? (
+                  <Typography>Загрузка...</Typography>
+                ) : (
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Мои заказы</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell />
+                        <TableCell>ID Заказа</TableCell>
+                        <TableCell>Дата</TableCell>
+                        <TableCell>Статус</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {data.map((order) => (
+                        <CustumRow key={order.id} orderItem={order} />
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </Box>
+              <Payment clientSecret={clientSecret} />
+            </Box>
+          </Container>
         </Box>
-      </Container>
-    </Box>
+      </Elements>
+    )
   );
 };
