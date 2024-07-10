@@ -12,6 +12,8 @@ import {
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AdminRequest } from "@/pages/admin-request/AdminRequest";
+import { AdminProduct } from "@/pages/admin-product/AdminProduct";
+import { AdminDetail } from "@/pages/admin-product/AdminDetail";
 function App() {
   const routes = createBrowserRouter([
     {
@@ -46,13 +48,21 @@ function App() {
     {
       element: <AdminLayout />,
       children: [
+        // {
+        //   path: "/admin",
+        //   element: <Admin />,
+        // },
         {
           path: "/admin",
-          element: <Admin />,
+          element: <AdminRequest />,
         },
         {
-          path: "/admin/request",
-          element: <AdminRequest />,
+          path: "/admin/product",
+          element: <AdminProduct />,
+        },
+        {
+          path: "/admin/product/:id",
+          element: <AdminDetail />,
         },
       ],
     },
