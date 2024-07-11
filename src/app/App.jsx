@@ -14,6 +14,7 @@ import { AdminRequest } from "@/pages/admin-request/AdminRequest";
 import { AdminProduct } from "@/pages/admin-product/AdminProduct";
 import { AdminDetail } from "@/pages/admin-product/AdminDetail";
 import { Payment } from "@/pages/payment/Payment";
+import { PaymentSuccess } from "@/pages/payment/PaymentSuccess";
 function App() {
   const routes = createBrowserRouter([
     {
@@ -46,6 +47,10 @@ function App() {
         {
           path: "/payment/:requestId",
           element: <Payment/>
+        },
+        {
+          path: "/payment/success",
+          element: <PaymentSuccess/>
         }
       ],
     },

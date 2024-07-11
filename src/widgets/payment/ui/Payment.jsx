@@ -5,6 +5,7 @@ import {
   PaymentElement,
 } from "@stripe/react-stripe-js";
 import { Box, Button, Typography } from "@mui/material";
+import axios from "axios";
 
 export const Payment = ({ clientSecret }) => {
   const stripe = useStripe();
@@ -29,15 +30,17 @@ export const Payment = ({ clientSecret }) => {
       clientSecret,
       elements,
       confirmParams: {
-        return_url: "http://localhost:5173",
+        return_url: "http://localhost:5173/payment/success",
       },
     });
+    window.localStorage.setItem("paymentIntent", JSON.stringify(paymentIntent))
 
     if (error) {
       console.error(error.message);
       alert("Ошибка при оплате: " + error.message);
     } else if (paymentIntent.status === "succeeded") {
       alert("Оплата прошла успешно!");
+      axios.post('http://localhost:3000/payment/save', {paymentIntent})
     }
   };
 
