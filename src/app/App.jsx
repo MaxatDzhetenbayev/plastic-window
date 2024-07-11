@@ -5,7 +5,6 @@ import {
   SignIn,
   Window,
   WindowCalculator,
-  Admin,
   SignUp,
   Profile,
 } from "../pages";
@@ -14,6 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { AdminRequest } from "@/pages/admin-request/AdminRequest";
 import { AdminProduct } from "@/pages/admin-product/AdminProduct";
 import { AdminDetail } from "@/pages/admin-product/AdminDetail";
+import { Payment } from "@/pages/payment/Payment";
 function App() {
   const routes = createBrowserRouter([
     {
@@ -43,6 +43,10 @@ function App() {
           path: "/profile",
           element: <Profile />,
         },
+        {
+          path: "/payment/:requestId",
+          element: <Payment/>
+        }
       ],
     },
     {

@@ -43,8 +43,7 @@ export const Payment = ({ clientSecret }) => {
 
   return (
     <Box>
-      <Typography variant="h6">Оплата</Typography>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} style={{marginTop: "40px"}}>
         <PaymentElement />
         <Button
           type="submit"

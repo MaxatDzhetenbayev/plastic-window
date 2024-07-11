@@ -1,6 +1,6 @@
-import { useAuth } from "@/shared/hooks/useAuth";
 import {
   Box,
+  Button,
   Collapse,
   Container,
   IconButton,
@@ -12,41 +12,12 @@ import {
   Typography,
 } from "@mui/material";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import { Payment } from "@widgets/payment/ui/Payment";
-
-const stripePromise = loadStripe(
-  "pk_test_51PZzt1Ano0RJV2sOyNXjUHN552ymUjoMcj4qC66aLzrjwevssMJWzqELG4rOJulKZsbRX6o0piLMkKcH1HvsCRaO00wtxBsbR8"
-);
+import { useNavigate } from "react-router-dom";
 
 export const Profile = () => {
-  const user = useAuth();
-  const [clientSecret, setClientSecret] = useState("");
-
-  useEffect(() => {
-    const fetchClientSecret = async () => {
-      try {
-        const response = await axios.post(
-          "http://localhost:3000/payment/intent",
-          {
-            amount: 5000,
-          },
-          {
-            withCredentials: true,
-          }
-        );
-        setClientSecret(response.data.clientSecret);
-      } catch (error) {
-        console.error("Ошибка при получении clientSecret: ", error);
-      }
-    };
-
-    fetchClientSecret();
-  }, []);
 
   const { data, isLoading } = useQuery({
     queryFn: async () => {
@@ -83,7 +54,7 @@ export const Profile = () => {
 
   const CustumRow = ({ orderItem }) => {
     const [open, setOpen] = useState(false);
-
+    const navigate = useNavigate()
     return (
       <>
         <TableRow>
@@ -102,8 +73,31 @@ export const Profile = () => {
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
             <Collapse in={open}>
               <Box sx={{ padding: "20px" }}>
-                <Typography textAlign="center"></Typography>
-                {orderItem.detail.status}
+                <Typography variant="h6" fontWeight="600" textAlign="center">
+                  Детали заказа
+                </Typography>
+                <Typography>
+                  <strong>Название товара:</strong> {orderItem.detail.item.name}
+                </Typography>
+                <Typography>
+                  <strong>Дата замера:</strong> {new Date(orderItem.detail.measurement_date).toLocaleDateString()}
+                </Typography>
+                <Typography>
+                  <strong>Дата установки:</strong> {orderItem.detail.instalation_date ? new Date(orderItem.detail.instalation_date).toLocaleDateString(): "Не назначена"}
+                </Typography>
+                <Typography>
+                  <strong>Ширина:</strong> { orderItem.detail.options.width ? orderItem.detail.options.width: "Указание после замера"}
+                </Typography>
+                <Typography>
+                  <strong>Высота:</strong> { orderItem.detail.options.height ? orderItem.detail.options.height: "Указание после замера"}
+                </Typography>
+                {
+                  orderItem.detail.status === "preparing" && (
+                    <Typography>
+                      <Button variant="contained" sx={{width: "100%", mt: "20px"}} onClick={() =>navigate(`/payment/${orderItem.id}`)}>Оплатить</Button>
+                    </Typography>
+                  )
+                }
               </Box>
             </Collapse>
           </TableCell>
@@ -113,8 +107,6 @@ export const Profile = () => {
   };
 
   return (
-    clientSecret && (
-      <Elements stripe={stripePromise} options={{ clientSecret }}>
         <Box>
           <Container>
             <Box>
@@ -151,11 +143,8 @@ export const Profile = () => {
                   </Table>
                 )}
               </Box>
-              <Payment clientSecret={clientSecret} />
             </Box>
           </Container>
         </Box>
-      </Elements>
-    )
   );
 };
