@@ -33,14 +33,14 @@ export const Payment = ({ clientSecret }) => {
         return_url: "http://localhost:5173/payment/success",
       },
     });
-    window.localStorage.setItem("paymentIntent", JSON.stringify(paymentIntent))
+    // window.localStorage.setItem("paymentIntent", JSON.stringify(paymentIntent))
 
     if (error) {
       console.error(error.message);
       alert("Ошибка при оплате: " + error.message);
     } else if (paymentIntent.status === "succeeded") {
       alert("Оплата прошла успешно!");
-      axios.post('http://localhost:3000/payment/save', {paymentIntent})
+      axios.post('http://localhost:3000/payment/save', {paymentIntentId: paymentIntent.id})
     }
   };
 
