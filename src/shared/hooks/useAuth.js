@@ -1,21 +1,17 @@
-import {useEffect } from "react";
+import { useEffect } from "react";
 
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { api } from "../api";
 
 const fetchUser = async () => {
-  const response = await axios.get("http://localhost:3000/auth/profile", {
+  const response = await api.get("auth/profile", {
     withCredentials: true,
   });
   return response.data;
 };
 
 export const useAuth = () => {
-  const {
-    data: user,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: user } = useQuery({
     queryKey: ["user"],
     queryFn: fetchUser,
     staleTime: 60 * 60 * 1000, // 60 минут

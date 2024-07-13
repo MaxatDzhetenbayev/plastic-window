@@ -18,6 +18,7 @@ export const logoutRequest = async () => {
 };
 
 export const useLogout = () => {
+	const alm = 12;
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
