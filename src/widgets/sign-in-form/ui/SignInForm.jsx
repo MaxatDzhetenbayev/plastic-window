@@ -1,15 +1,10 @@
-import { GoogleLoginButton } from "@/features/auth";
-import { auth } from "@/shared/api/firebaseConfig";
-import { useAuth } from "@/shared/hooks/useAuth";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export const SignInForm = () => {
-  const user = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -94,7 +89,6 @@ export const SignInForm = () => {
           >
             Войти
           </Button>
-          <GoogleLoginButton />
         </Box>
         <Link style={{ color: "#1976d2", fontWeight: "500" }}>
           Забыли пароль?

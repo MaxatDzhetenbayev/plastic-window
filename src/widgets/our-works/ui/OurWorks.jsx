@@ -38,7 +38,7 @@ export const OurWorks = () => {
                 }}
             >
                 {
-                    data.map((item) => (
+                    data?.map((item) => (
                         <SwiperSlide key={item.id}>
                             <img src={item.image} alt={item.title} style={{
                                 width: '100%',

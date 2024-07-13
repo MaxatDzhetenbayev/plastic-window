@@ -1,4 +1,3 @@
-import { db } from "@/shared/api/firebaseConfig";
 import {
   Box,
   Container,
@@ -7,8 +6,7 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const roleList = ["manager", "worker", "user", "admin"];
 

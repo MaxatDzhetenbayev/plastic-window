@@ -1,13 +1,13 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { BaseLayout, AdminLayout } from "./layouts";
 import {
-  Home,
   SignIn,
   Window,
   WindowCalculator,
   SignUp,
   Profile,
 } from "../pages";
+import {Home} from '../pages/home/Home'
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AdminRequest } from "@/pages/admin-request/AdminRequest";

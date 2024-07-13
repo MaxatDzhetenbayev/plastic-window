@@ -1,4 +1,3 @@
-import { fetchCreateAccount } from "@/widgets/api/CreateAccaount";
 import {
   Box,
   Button,
@@ -36,9 +35,7 @@ export const CreateAccaunt = () => {
             </MenuItem>
           ))}
         </Select>
-        <Button onClick={() => fetchCreateAccount(email, password, role)}>
-          Создать аккаунт
-        </Button>
+        <Button onClick={() => {}}>Создать аккаунт</Button>
       </form>
     </Container>
   );
