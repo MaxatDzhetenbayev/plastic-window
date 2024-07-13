@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Outlet } from "react-router-dom";
 import { Header } from "@widgets";
 import { Box } from "@mui/material";
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import { api } from "@/shared/api";
 
 export const BaseLayout = () => {
   const fetchWindows = async () => {
-    const response = await axios.get("http://localhost:3000/windows");
+    const response = await api.get("windows");
     return response.data;
   };
 

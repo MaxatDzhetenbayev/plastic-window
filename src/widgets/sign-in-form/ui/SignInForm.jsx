@@ -1,6 +1,6 @@
+import { api } from "@/shared/api";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -11,11 +11,9 @@ export const SignInForm = () => {
 
   const loginUser = async (user) => {
     try {
-      const { data } = await axios.post(
-        "http://localhost:3000/auth/login",
-        user,
-        { withCredentials: true }
-      );
+      const { data } = await api.post("auth/login", user, {
+        withCredentials: true,
+      });
       return data;
     } catch (error) {
       console.log(error);

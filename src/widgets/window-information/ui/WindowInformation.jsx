@@ -1,16 +1,15 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { CreateOrderButton } from "@/features/order";
+import { api } from "@/shared/api";
 
 export const WindowInformation = () => {
   const { model } = useParams();
   const [currentTabId, setCurrentTabId] = useState(null);
   const fetchWindows = async () => {
-    const response = await axios.get(`http://localhost:3000/windows/${model}`);
+    const response = await api.get(`windows/${model}`);
     console.log(response.data);
     return response.data;
   };

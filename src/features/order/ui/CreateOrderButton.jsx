@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Modal } from "@components/index";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import axios from "axios";
+import { api } from "@/shared/api";
 
 export const CreateOrderButton = ({ itemId }) => {
   const [open, setOpen] = useState(false);
@@ -23,8 +23,8 @@ export const CreateOrderButton = ({ itemId }) => {
   };
 
   const fetchCreateRequest = async () => {
-    const response = await axios.post(
-      `http://localhost:3000/user-requests`,
+    const response = await api.post(
+      `user-requests`,
       {
         fullname,
         phone,

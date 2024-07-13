@@ -1,8 +1,8 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
+import { api } from "@/shared/api";
 
 export const SignUpForm = () => {
   const navigate = useNavigate();
@@ -12,10 +12,7 @@ export const SignUpForm = () => {
 
   const registrationUser = async (user) => {
     try {
-      const { data } = await axios.post(
-        "http://localhost:3000/auth/register",
-        user
-      );
+      const { data } = await api.post("auth/register", user);
       return data;
     } catch (error) {
       console.log(error);
@@ -23,7 +20,7 @@ export const SignUpForm = () => {
     }
   };
 
-  const { mutate, isPending, isError, isSuccess } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: registrationUser,
     onSuccess: () => navigate("/sign-in"),
   });

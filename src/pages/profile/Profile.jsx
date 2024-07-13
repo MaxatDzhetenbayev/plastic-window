@@ -14,20 +14,16 @@ import {
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { api } from "@/shared/api";
 
 export const Profile = () => {
-
   const { data, isLoading } = useQuery({
     queryFn: async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/user-requests/user`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await api.get(`user-requests/user`, {
+          withCredentials: true,
+        });
         return response.data;
       } catch (error) {
         console.log("Error detail: " + error);
@@ -54,7 +50,7 @@ export const Profile = () => {
 
   const CustumRow = ({ orderItem }) => {
     const [open, setOpen] = useState(false);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     return (
       <>
         <TableRow>
@@ -80,24 +76,42 @@ export const Profile = () => {
                   <strong>Название товара:</strong> {orderItem.detail.item.name}
                 </Typography>
                 <Typography>
-                  <strong>Дата замера:</strong> {new Date(orderItem.detail.measurement_date).toLocaleDateString()}
+                  <strong>Дата замера:</strong>{" "}
+                  {new Date(
+                    orderItem.detail.measurement_date
+                  ).toLocaleDateString()}
                 </Typography>
                 <Typography>
-                  <strong>Дата установки:</strong> {orderItem.detail.instalation_date ? new Date(orderItem.detail.instalation_date).toLocaleDateString(): "Не назначена"}
+                  <strong>Дата установки:</strong>{" "}
+                  {orderItem.detail.instalation_date
+                    ? new Date(
+                        orderItem.detail.instalation_date
+                      ).toLocaleDateString()
+                    : "Не назначена"}
                 </Typography>
                 <Typography>
-                  <strong>Ширина:</strong> { orderItem.detail.options.width ? orderItem.detail.options.width: "Указание после замера"}
+                  <strong>Ширина:</strong>{" "}
+                  {orderItem.detail.options.width
+                    ? orderItem.detail.options.width
+                    : "Указание после замера"}
                 </Typography>
                 <Typography>
-                  <strong>Высота:</strong> { orderItem.detail.options.height ? orderItem.detail.options.height: "Указание после замера"}
+                  <strong>Высота:</strong>{" "}
+                  {orderItem.detail.options.height
+                    ? orderItem.detail.options.height
+                    : "Указание после замера"}
                 </Typography>
-                {
-                  orderItem.detail.status === "preparing" && (
-                    <Typography>
-                      <Button variant="contained" sx={{width: "100%", mt: "20px"}} onClick={() =>navigate(`/payment/${orderItem.id}`)}>Оплатить</Button>
-                    </Typography>
-                  )
-                }
+                {orderItem.detail.status === "preparing" && (
+                  <Typography>
+                    <Button
+                      variant="contained"
+                      sx={{ width: "100%", mt: "20px" }}
+                      onClick={() => navigate(`/payment/${orderItem.id}`)}
+                    >
+                      Оплатить
+                    </Button>
+                  </Typography>
+                )}
               </Box>
             </Collapse>
           </TableCell>
@@ -107,44 +121,44 @@ export const Profile = () => {
   };
 
   return (
+    <Box>
+      <Container>
         <Box>
-          <Container>
-            <Box>
-              <Typography variant="h4" sx={{ marginTop: "50px" }}>
-                Личный кабинет
-              </Typography>
-              <Box
-                sx={{
-                  borderRadius: "2px",
-                  border: `1px solid #dddddd`,
-                  marginTop: "20px",
-                }}
-              >
-                {isLoading ? (
-                  <Typography>Загрузка...</Typography>
-                ) : (
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Мои заказы</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell />
-                        <TableCell>ID Заказа</TableCell>
-                        <TableCell>Дата</TableCell>
-                        <TableCell>Статус</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {data.map((order) => (
-                        <CustumRow key={order.id} orderItem={order} />
-                      ))}
-                    </TableBody>
-                  </Table>
-                )}
-              </Box>
-            </Box>
-          </Container>
+          <Typography variant="h4" sx={{ marginTop: "50px" }}>
+            Личный кабинет
+          </Typography>
+          <Box
+            sx={{
+              borderRadius: "2px",
+              border: `1px solid #dddddd`,
+              marginTop: "20px",
+            }}
+          >
+            {isLoading ? (
+              <Typography>Загрузка...</Typography>
+            ) : (
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Мои заказы</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell />
+                    <TableCell>ID Заказа</TableCell>
+                    <TableCell>Дата</TableCell>
+                    <TableCell>Статус</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data.map((order) => (
+                    <CustumRow key={order.id} orderItem={order} />
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </Box>
         </Box>
+      </Container>
+    </Box>
   );
 };

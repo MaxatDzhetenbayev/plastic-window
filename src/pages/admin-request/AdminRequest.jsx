@@ -14,6 +14,7 @@ import React, { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
+import { api } from "@/shared/api";
 
 export const AdminRequest = () => {
   const user = useAuth();
@@ -38,12 +39,9 @@ export const AdminRequest = () => {
   const { data } = useQuery({
     queryFn: async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/user-requests?status=${status}`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await api.get(`user-requests?status=${status}`, {
+          withCredentials: true,
+        });
 
         return response.data;
       } catch (error) {
@@ -78,8 +76,8 @@ export const AdminRequest = () => {
         status,
         ...rest
       } = newRow;
-      await axios.patch(
-        `http://localhost:3000/user-requests/${id}`,
+      await api.patch(
+        `user-requests/${id}`,
         {
           ...rest,
           detail: {

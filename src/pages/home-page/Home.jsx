@@ -4,17 +4,6 @@ import axios from "axios";
 import React, { useEffect } from "react";
 
 export const Home = () => {
-  const fetchWindows = async () => {
-    const response = await axios.get("http://localhost:3000/windows", {
-      withCredentials: true,
-    });
-    return response.data;
-  };
-
-  useEffect(() => {
-    fetchWindows();
-  }, []);
-
   return (
     <Box>
       <Hero />
