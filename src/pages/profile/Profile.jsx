@@ -39,6 +39,8 @@ export const Profile = () => {
         return "В обработке";
       case "preparing":
         return "Ожидание оплаты";
+      case "paid":
+        return "Оплачен"
       case "work":
         return "В работе";
       case "done":
@@ -85,8 +87,8 @@ export const Profile = () => {
                   <strong>Дата установки:</strong>{" "}
                   {orderItem.detail.instalation_date
                     ? new Date(
-                        orderItem.detail.instalation_date
-                      ).toLocaleDateString()
+                      orderItem.detail.instalation_date
+                    ).toLocaleDateString()
                     : "Не назначена"}
                 </Typography>
                 <Typography>
