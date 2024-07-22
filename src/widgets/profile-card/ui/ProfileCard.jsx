@@ -1,14 +1,14 @@
 import { UserAvatar } from "@/entities";
 import { useAuth } from "@/shared/hooks/useAuth";
 import { Box, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 export const ProfileCard = () => {
-  const user = useAuth();
+  const [user, success] = useAuth();
 
   return (
     <Box>
-      {user ? (
+      {success ? (
         <Box sx={{ display: "flex", alignItems: "center", gap: "15px" }}>
           <Typography>
             Добро пожаловать, {user?.username || user?.email}

@@ -11,7 +11,7 @@ const fetchUser = async () => {
 };
 
 export const useAuth = () => {
-  const { data: user } = useQuery({
+  const { data: user, isSuccess } = useQuery({
     queryKey: ["user"],
     queryFn: fetchUser,
     staleTime: 60 * 60 * 1000, // 60 минут
@@ -31,5 +31,5 @@ export const useAuth = () => {
     }
   }, [user]);
 
-  return user;
+  return [user, isSuccess];
 };

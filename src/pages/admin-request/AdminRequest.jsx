@@ -8,7 +8,6 @@ import {
 } from "@mui/x-data-grid";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 import EditIcon from "@mui/icons-material/Edit";
@@ -17,7 +16,7 @@ import CancelIcon from "@mui/icons-material/Close";
 import { api } from "@/shared/api";
 
 export const AdminRequest = () => {
-  const user = useAuth();
+  const [user, success] = useAuth();
   const [status, setStatus] = useState(null);
   const queryClient = useQueryClient();
   const [rowModesModel, setRowModesModel] = useState({});
@@ -191,7 +190,14 @@ export const AdminRequest = () => {
       width: 120,
       editable: true,
       type: "singleSelect",
-      valueOptions: ["pending", "preparing", "work", "done", "canceled"],
+      valueOptions: [
+        "pending",
+        "preparing",
+        "paid",
+        "work",
+        "done",
+        "canceled",
+      ],
     },
     {
       field: "actions",

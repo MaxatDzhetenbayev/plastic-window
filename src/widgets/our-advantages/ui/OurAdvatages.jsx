@@ -59,7 +59,7 @@ export const OurAdvatages = () => {
         }}
       >
         {advantages.map(({ title, content }) => (
-          <Card sx={{ padding: "20px", flexBasis: "300px", flexGrow: 1 }}>
+          <Card key={title} sx={{ padding: "20px", flexBasis: "300px", flexGrow: 1 }}>
             <Typography variant="h5" content="h3" sx={{ fontWeight: 600 }}>
               {title}
             </Typography>
