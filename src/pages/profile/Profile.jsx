@@ -9,6 +9,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
@@ -16,6 +17,8 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { api } from "@/shared/api";
+import { Modal } from "@/shared/components";
+import { UploadButton } from "@/features/upload-button/ui/UploadButton";
 
 export const Profile = () => {
   const { data, isLoading } = useQuery({
@@ -39,6 +42,8 @@ export const Profile = () => {
         return "В обработке";
       case "preparing":
         return "Ожидание оплаты";
+      case "paid":
+        return "Оплачен"
       case "work":
         return "В работе";
       case "done":
@@ -50,6 +55,12 @@ export const Profile = () => {
 
   const CustumRow = ({ orderItem }) => {
     const [open, setOpen] = useState(false);
+    const [reviewIsOpen, setReviewIsOpen] = useState(false);
+    const [text, setText] = useState("");
+    const [imageUrl, setImageUrl] = useState(null);
+
+    console.log(imageUrl)
+
     const navigate = useNavigate();
     return (
       <>
@@ -85,8 +96,8 @@ export const Profile = () => {
                   <strong>Дата установки:</strong>{" "}
                   {orderItem.detail.instalation_date
                     ? new Date(
-                        orderItem.detail.instalation_date
-                      ).toLocaleDateString()
+                      orderItem.detail.instalation_date
+                    ).toLocaleDateString()
                     : "Не назначена"}
                 </Typography>
                 <Typography>
@@ -102,20 +113,49 @@ export const Profile = () => {
                     : "Указание после замера"}
                 </Typography>
                 {orderItem.detail.status === "preparing" && (
-                  <Typography>
-                    <Button
-                      variant="contained"
-                      sx={{ width: "100%", mt: "20px" }}
-                      onClick={() => navigate(`/payment/${orderItem.id}`)}
-                    >
-                      Оплатить
-                    </Button>
-                  </Typography>
+                  <Button
+                    variant="contained"
+                    sx={{ width: "100%", mt: "20px" }}
+                    onClick={() => navigate(`/payment/${orderItem.id}`)}
+                  >
+                    Оплатить
+                  </Button>
+                )}
+                {orderItem.detail.status === "done" && (
+                  <Button
+                    variant="contained"
+                    sx={{ width: "100%", mt: "20px" }}
+                    onClick={() => setReviewIsOpen(true)}
+                  >
+                    Оставить отзыв
+                  </Button>
                 )}
               </Box>
             </Collapse>
           </TableCell>
         </TableRow>
+        <Modal open={reviewIsOpen} handleClose={() => setOpen(false)}>
+          <Box sx={{ padding: "20px", display: "flex", justifyContent: "center", height: "100vh", alignItems: "center" }}>
+            <Box sx={{ backgroundColor: "#fff", padding: "20px", display: "flex", flexDirection: "column", gap: "20px", borderRadius: "10px" }}>
+              <Typography variant="h6" fontWeight="600" textAlign="center">
+                Оставить отзыв
+              </Typography>
+              <TextField onChange={(e) => setText(e.target.value)} value={text} variant="standard" helperText="Ваш комментарий" fullWidth />
+              <UploadButton onUploadComplete={(url) => setImageUrl(url)}>
+                Загрузить картину
+              </UploadButton>
+              <Button
+                variant="contained"
+                sx={{ width: "100%", mt: "20px" }}
+                onClick={() => {
+                  setReviewIsOpen(false);
+                }}
+              >
+                Отправить
+              </Button>
+            </Box>
+          </Box>
+        </Modal>
       </>
     );
   };
