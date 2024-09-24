@@ -18,9 +18,11 @@ export const Modal = ({ children, open, handleClose }) => {
             padding: "30px",
             display: "flex",
             flexDirection: "column",
+            maxHeight: "90vh",
+            overflowY: "scroll",
           }}
         >
-          <Close onClick={handleClose} sx={{ alignSelf: "flex-end" }} />
+          <Close onClick={handleClose} sx={{ alignSelf: "flex-end", cursor: "pointer" }} />
           {children}
         </Box>
       </Box>

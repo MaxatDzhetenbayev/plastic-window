@@ -17,8 +17,6 @@ export const UploadButton = ({ onUploadComplete, children }) => {
     onUploadComplete
   );
 
-  console.log(fileUrl);
-  console.log(fileName);
   const handleClick = () => {
     inputRef.current.click();
   };

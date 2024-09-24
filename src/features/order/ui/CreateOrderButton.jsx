@@ -152,7 +152,7 @@ export const CreateOrderButton = ({ itemId }) => {
                       }}
                     >
                       <Typography variant="body1">
-                        {worker.profile.name + " " + worker.profile.surname}
+                        {worker?.profile?.name + " " + worker?.profile?.surname}
                       </Typography>
                       <Rating
                         name="disabled"

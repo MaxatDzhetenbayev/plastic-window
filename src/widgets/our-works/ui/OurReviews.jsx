@@ -12,7 +12,7 @@ import { api } from "@/shared/api";
 import { backgroundFileUrl } from "@/shared/constants";
 
 export const OurReviews = () => {
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: "reviews",
     queryFn: async () => {
       try {
@@ -27,7 +27,15 @@ export const OurReviews = () => {
     },
   });
 
-  console.log(backgroundFileUrl);
+
+  if (isLoading) {
+    return <Box>Loading</Box>
+  }
+
+  if (!data) {
+    return <Box>Нет данных</Box>
+  }
+
 
   return (
     <Container sx={{ padding: "30px 0px" }}>
