@@ -15,6 +15,7 @@ import { AdminProduct } from "@/pages/admin-product/AdminProduct";
 import { AdminDetail } from "@/pages/admin-product/AdminDetail";
 import { Payment } from "@/pages/payment/Payment";
 import { PaymentSuccess } from "@/pages/payment/PaymentSuccess";
+import { WorkerPage } from "@/pages/worker/WorkerPage";
 
 function App() {
   const routes = createBrowserRouter([
@@ -73,6 +74,13 @@ function App() {
         {
           path: "/admin/product/:id",
           element: <AdminDetail />,
+        },
+        {
+          path: "/admin/worker",
+          element: <WorkerPage />,
+        },
+        {
+          path: "/admin/worker/:id",
         },
       ],
     },

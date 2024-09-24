@@ -1,18 +1,29 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Rating,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from "@mui/material";
 import React, { useState } from "react";
 import { Modal } from "@components/index";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { api } from "@/shared/api";
+import { useForm, Controller } from "react-hook-form";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const CreateOrderButton = ({ itemId }) => {
   const [open, setOpen] = useState(false);
-  const [fullname, setFullname] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [measurementDate, setMeasurementDate] = useState(null);
-
-  console.log(measurementDate);
+  console.log(itemId);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    control,
+  } = useForm();
 
   const handleOpen = () => {
     setOpen(true);
@@ -22,29 +33,43 @@ export const CreateOrderButton = ({ itemId }) => {
     setOpen(false);
   };
 
-  const fetchCreateRequest = async () => {
-    const response = await api.post(
-      `user-requests`,
-      {
-        fullname,
-        phone,
-        address,
-        detail: {
-          measurement_date: measurementDate,
-          item_id: itemId,
-          options: {},
-        },
-      },
-      {
+  const { data: workers } = useQuery({
+    queryKey: ["workers"],
+    queryFn: async () => {
+      const response = await api.get("/users/workers", {
         withCredentials: true,
-      }
-    );
-    console.log(response.data);
+      });
+      return response.data;
+    },
+  });
+
+  const fetchCreateRequest = async (data) => {
+    const response = await api.post(`user-requests`, data, {
+      withCredentials: true,
+    });
+    return response.data;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    fetchCreateRequest();
+  const { mutate } = useMutation({
+    mutationFn: fetchCreateRequest,
+    onSettled: () => {
+      handleClose();
+    },
+  });
+
+  const handleCreateRequest = async (data) => {
+    const worker = workers.find((worker) => worker.id == data.worker);
+    const requestData = {
+      ...data,
+      worker: worker,
+      detail: {
+        measurement_date: data.measurement_date.$d,
+        item_id: itemId,
+        options: {},
+      },
+    };
+    console.log(requestData);
+    mutate(requestData);
   };
 
   return (
@@ -53,65 +78,117 @@ export const CreateOrderButton = ({ itemId }) => {
         Заказать
       </Button>
       <Modal open={open} handleClose={handleClose}>
-        <Box
-          sx={{
+        <Typography variant="h3" textAlign="center">
+          Заказать услугу
+        </Typography>
+        <form
+          onSubmit={handleSubmit(handleCreateRequest)}
+          style={{
             display: "flex",
-            justifyContent: "center",
-            height: "100vh",
-            alignItems: "center",
+            flexDirection: "column",
+            gap: "20px",
+            marginTop: "20px",
           }}
         >
-          <Box
-            sx={{
-              backgroundColor: "#fff",
-              padding: "30px",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <Typography variant="h3" textAlign="center">
-              Заказать услугу
-            </Typography>
-            <form
-              onSubmit={handleSubmit}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "20px",
-                marginTop: "20px",
-              }}
-            >
-              <TextField
-                label="Полное имя"
-                variant="outlined"
-                value={fullname}
-                onChange={(e) => setFullname(e.target.value)}
-              />
-              <TextField
-                label="Телефон"
-                variant="outlined"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-              <TextField
-                label="Адрес проживания"
-                variant="outlined"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
+          <TextField
+            label="Полное имя"
+            variant="outlined"
+            {...register("fullname", { required: true })}
+          />
+          <TextField
+            label="Телефон"
+            variant="outlined"
+            {...register("phone", { required: true })}
+          />
+          <TextField
+            label="Почта"
+            variant="outlined"
+            {...register("email", { required: true })}
+          />
+          <TextField
+            label="Адрес проживания"
+            variant="outlined"
+            {...register("address", { required: true })}
+          />
+          <Typography variant="h5">Выберите специалиста:</Typography>
+          <Controller
+            name="worker"
+            control={control}
+            defaultValue=""
+            rules={{ required: true }}
+            render={({ field }) => (
+              <ToggleButtonGroup
+                color="primary"
+                exclusive
+                {...field}
+                aria-label="Platform"
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "6px",
+                  maxHeight: "150px",
+                  overflowY: "scroll",
+                }}
+              >
+                {workers?.map((worker) => {
+                  console.log(field.value);
+                  return (
+                    <ToggleButton
+                      key={worker.id}
+                      value={worker.id}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                        bgcolor:
+                          field.value == worker.id ? "primary.main" : "default",
+                        color: field.value == worker.id ? "white" : "black",
+                        "&:hover": {
+                          bgcolor:
+                            field.value == worker.id
+                              ? "primary.dark"
+                              : "grey.300", // Изменение цвета при наведении
+                        },
+                      }}
+                    >
+                      <Typography variant="body1">
+                        {worker.profile.name + " " + worker.profile.surname}
+                      </Typography>
+                      <Rating
+                        name="disabled"
+                        value={Number(worker.rating)}
+                        readOnly
+                      />
+                    </ToggleButton>
+                  );
+                })}
+              </ToggleButtonGroup>
+            )}
+          />
+
+          <Controller
+            name="measurement_date"
+            control={control}
+            defaultValue={null}
+            render={({ field }) => (
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
+                <DateTimePicker
                   label="Дата замера"
-                  value={measurementDate}
-                  onChange={(newValue) => setMeasurementDate(newValue)}
+                  {...field}
+                  views={["year", "month", "day", "hours"]}
+                  shouldDisableTime={(time) => {
+                    const hours = time.$H;
+                    return hours < 9 || hours >= 18;
+                  }}
                 />
               </LocalizationProvider>
-              <Button variant="contained" type="submit">
-                Заказать
-              </Button>
-            </form>
-          </Box>
-        </Box>
+            )}
+          />
+
+          <Button variant="contained" type="submit">
+            Заказать
+          </Button>
+        </form>
       </Modal>
     </>
   );

@@ -6,5 +6,6 @@ export { Hero } from "./hero/Hero";
 export { OurAdvatages } from "./our-advantages";
 export { SubmitForm } from "./submit-form";
 export { WindowInformation } from "./window-information";
-export { OurWorks } from "./our-works";
+export { OurReviews } from "./our-works";
+export { OurVideoReviews } from "./our-video-review";
 export { Calculator } from "./calculator";

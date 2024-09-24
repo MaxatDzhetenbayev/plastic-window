@@ -1,15 +1,21 @@
-import { Hero, OurAdvatages, OurWorks, SubmitForm } from "@/widgets";
+import {
+  Hero,
+  OurAdvatages,
+  OurReviews,
+  OurVideoReviews,
+  SubmitForm,
+} from "@/widgets";
 import { Box } from "@mui/material";
-import axios from "axios";
-import React, { useEffect } from "react";
+import React from "react";
 
 export const Home = () => {
   return (
     <Box>
       <Hero />
-      <SubmitForm />
+      {/* <SubmitForm /> */}
       <OurAdvatages />
-      <OurWorks />
+      <OurReviews />
+      <OurVideoReviews />
     </Box>
   );
 };

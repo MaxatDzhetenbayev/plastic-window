@@ -1,4 +1,5 @@
 import { api } from "@/shared/api";
+import { useAuth } from "@/shared/hooks/useAuth";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import React, { useState } from "react";
@@ -21,9 +22,13 @@ export const SignInForm = () => {
     }
   };
 
-  const { mutate, isPending, isError, isSuccess } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: loginUser,
-    onSuccess: () => navigate("/"),
+    mutationKey: "login",
+    onSuccess: async () => {
+      await queryClient.invalidateQueries("login");
+      navigate("/");
+    },
   });
 
   const handleNavigateForRole = (role) => {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Outlet } from "react-router-dom";
 import { Header } from "@widgets";
 import { Box } from "@mui/material";
@@ -35,9 +35,27 @@ export const BaseLayout = () => {
   ];
 
   return (
-    <Box>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <Header navList={navList} />
-      <Outlet />
+      <Box
+        sx={{
+          flexGrow: 1,
+        }}
+      >
+        <Outlet />
+      </Box>
+      <footer
+        style={{
+          backgroundColor: "#1976d2",
+          color: "#fff",
+          marginTop: "20px",
+          padding: "20px 0",
+        }}
+      >
+        <Box sx={{ textAlign: "center", padding: "20px 0" }}>
+          © {new Date().getFullYear()} Завод окон - Алка Пласт
+        </Box>
+      </footer>
     </Box>
   );
 };

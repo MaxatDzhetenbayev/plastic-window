@@ -1,1 +1,1 @@
-export {OurWorks} from './ui/OurWorks.jsx'
+export { OurReviews } from "./ui/OurReviews";

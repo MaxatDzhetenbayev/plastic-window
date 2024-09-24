@@ -10,7 +10,6 @@ export const WindowInformation = () => {
   const [currentTabId, setCurrentTabId] = useState(null);
   const fetchWindows = async () => {
     const response = await api.get(`windows/${model}`);
-    console.log(response.data);
     return response.data;
   };
 
@@ -195,8 +194,8 @@ export const WindowInformation = () => {
                     </Box>
                   ))}
                 </Box>
-                <Typography sx={{ mt: "30px" }}>
-                  Цена: {Number(itemInfo.price).toLocaleString()}тг.
+                <Typography variant="h4" sx={{ mt: "30px" }}>
+                  Цена: {Number(itemInfo.price).toLocaleString()}тг/м2
                 </Typography>
                 <CreateOrderButton itemId={currentTabId} />
               </Box>

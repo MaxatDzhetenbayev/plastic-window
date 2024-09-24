@@ -4,6 +4,7 @@ import {
   Collapse,
   Container,
   IconButton,
+  Rating,
   Table,
   TableBody,
   TableCell,
@@ -14,11 +15,12 @@ import {
 } from "@mui/material";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { api } from "@/shared/api";
 import { Modal } from "@/shared/components";
 import { UploadButton } from "@/features/upload-button/ui/UploadButton";
+import { Controller, useForm } from "react-hook-form";
 
 export const Profile = () => {
   const { data, isLoading } = useQuery({
@@ -43,7 +45,7 @@ export const Profile = () => {
       case "preparing":
         return "Ожидание оплаты";
       case "paid":
-        return "Оплачен"
+        return "Оплачен";
       case "work":
         return "В работе";
       case "done":
@@ -56,10 +58,37 @@ export const Profile = () => {
   const CustumRow = ({ orderItem }) => {
     const [open, setOpen] = useState(false);
     const [reviewIsOpen, setReviewIsOpen] = useState(false);
-    const [text, setText] = useState("");
-    const [imageUrl, setImageUrl] = useState(null);
+    const { register, handleSubmit, control } = useForm({
+      defaultValues: {
+        rating: 0,
+      },
+    });
+    const { data: user_view } = useQuery({
+      queryKey: ["user-reviews"],
+      queryFn: async () => {
+        if (!orderItem.detail.id) return [];
+        const response = await api.get(
+          `/user-reviews/find-by-request/${orderItem.detail.id}`,
+          {
+            withCredentials: true,
+          }
+        );
+        return response.data;
+      },
+    });
 
-    console.log(imageUrl)
+    const { mutate } = useMutation({
+      mutationFn: async (data) => {
+        const response = await api.post(`user-reviews`, data, {
+          withCredentials: true,
+        });
+        return response.data;
+      },
+    });
+
+    const handleCreateReview = async (data, worker_id, user_request_id) => {
+      mutate({ ...data, worker_id, user_request_id });
+    };
 
     const navigate = useNavigate();
     return (
@@ -96,8 +125,8 @@ export const Profile = () => {
                   <strong>Дата установки:</strong>{" "}
                   {orderItem.detail.instalation_date
                     ? new Date(
-                      orderItem.detail.instalation_date
-                    ).toLocaleDateString()
+                        orderItem.detail.instalation_date
+                      ).toLocaleDateString()
                     : "Не назначена"}
                 </Typography>
                 <Typography>
@@ -121,7 +150,7 @@ export const Profile = () => {
                     Оплатить
                   </Button>
                 )}
-                {orderItem.detail.status === "done" && (
+                {orderItem.detail.status === "done" && !user_view?.length && (
                   <Button
                     variant="contained"
                     sx={{ width: "100%", mt: "20px" }}
@@ -135,25 +164,51 @@ export const Profile = () => {
           </TableCell>
         </TableRow>
         <Modal open={reviewIsOpen} handleClose={() => setOpen(false)}>
-          <Box sx={{ padding: "20px", display: "flex", justifyContent: "center", height: "100vh", alignItems: "center" }}>
-            <Box sx={{ backgroundColor: "#fff", padding: "20px", display: "flex", flexDirection: "column", gap: "20px", borderRadius: "10px" }}>
-              <Typography variant="h6" fontWeight="600" textAlign="center">
-                Оставить отзыв
+          <Typography variant="h6" fontWeight="600" textAlign="center">
+            Оставить отзыв
+          </Typography>
+          <Box sx={{ mt: "10px" }}>
+            <form
+              onSubmit={handleSubmit((data) =>
+                handleCreateReview(
+                  data,
+                  orderItem.detail.worker_id,
+                  orderItem.detail.id
+                )
+              )}
+            >
+              <Typography variant="h6" fontWeight="600">
+                Оценка:
               </Typography>
-              <TextField onChange={(e) => setText(e.target.value)} value={text} variant="standard" helperText="Ваш комментарий" fullWidth />
-              <UploadButton onUploadComplete={(url) => setImageUrl(url)}>
-                Загрузить картину
-              </UploadButton>
+              <Controller
+                name="rating"
+                control={control}
+                render={({ field }) => <Rating {...field} />}
+              />
+              <TextField
+                sx={{ mt: "10px" }}
+                {...register("review", { required: true })}
+                variant="standard"
+                helperText="Ваш комментарий"
+                fullWidth
+              />
+              <Controller
+                name="image"
+                control={control}
+                render={({ field: { onChange } }) => (
+                  <UploadButton onUploadComplete={(url) => onChange(url)}>
+                    Загрущить картинку
+                  </UploadButton>
+                )}
+              />
               <Button
                 variant="contained"
+                type="submit"
                 sx={{ width: "100%", mt: "20px" }}
-                onClick={() => {
-                  setReviewIsOpen(false);
-                }}
               >
                 Отправить
               </Button>
-            </Box>
+            </form>
           </Box>
         </Modal>
       </>

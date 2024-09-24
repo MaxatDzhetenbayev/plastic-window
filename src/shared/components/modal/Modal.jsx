@@ -1,9 +1,29 @@
 import React from "react";
-import { Modal as ModalComponent } from "@mui/material";
+import { Box, Modal as ModalComponent } from "@mui/material";
+import { Close } from "@mui/icons-material";
 export const Modal = ({ children, open, handleClose }) => {
   return (
     <ModalComponent open={open} onClose={handleClose}>
-      {children}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          height: "100vh",
+          alignItems: "center",
+        }}
+      >
+        <Box
+          sx={{
+            backgroundColor: "#fff",
+            padding: "30px",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Close onClick={handleClose} sx={{ alignSelf: "flex-end" }} />
+          {children}
+        </Box>
+      </Box>
     </ModalComponent>
   );
 };

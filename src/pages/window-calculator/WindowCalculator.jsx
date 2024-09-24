@@ -1,4 +1,9 @@
-import { Calculator, OurAdvatages, OurWorks } from "@/widgets";
+import {
+  Calculator,
+  OurAdvatages,
+  OurReviews,
+  OurVideoReviews,
+} from "@/widgets";
 import { Box } from "@mui/material";
 import React from "react";
 
@@ -7,7 +12,8 @@ export const WindowCalculator = () => {
     <Box>
       <Calculator />
       <OurAdvatages />
-      <OurWorks />
+      <OurReviews />
+      <OurVideoReviews />
     </Box>
   );
 };

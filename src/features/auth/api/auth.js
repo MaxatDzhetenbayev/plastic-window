@@ -18,16 +18,16 @@ export const logoutRequest = async () => {
 };
 
 export const useLogout = () => {
-	const alm = 12;
+  const alm = 12;
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const { mutate } = useMutation({
     mutationFn: logoutRequest,
-    mutationKey: "logout",
+    mutationKey: "login",
     onSuccess: () => {
       queryClient.clear();
-      //   localStorage.removeItem("user");
+      queryClient.invalidateQueries("login");
       navigate("/sign-in");
     },
     onError: (error) => {

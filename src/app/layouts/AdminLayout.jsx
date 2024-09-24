@@ -13,15 +13,22 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
-import {Outlet, useNavigate } from "react-router-dom";
+import React, { useLayoutEffect, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 const drawerWidth = 240;
 
 export const AdminLayout = () => {
-  const user = useAuth();
+  const [user] = useAuth();
+
+  useLayoutEffect(() => {
+    if (user?.roles.includes("user")) {
+      navigate("/");
+    }
+  }, [user]);
+
   const navigate = useNavigate();
 
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -42,11 +49,10 @@ export const AdminLayout = () => {
     }
   };
 
-
   const navigateList = [
     { title: "Запросы", path: "admin" },
     { title: "Товары", path: "admin/product" },
-  ]
+  ];
 
   const drawer = (
     <div>
@@ -54,7 +60,7 @@ export const AdminLayout = () => {
       <Divider />
       <List>
         {navigateList.map(({ title, path }, index) => (
-          <ListItem key={title} disablePadding >
+          <ListItem key={title} disablePadding>
             <ListItemButton onClick={() => navigate(path)}>
               <ListItemIcon>
                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
