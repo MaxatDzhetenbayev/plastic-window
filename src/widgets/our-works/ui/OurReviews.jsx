@@ -31,8 +31,8 @@ export const OurReviews = () => {
     return <Box>Loading</Box>;
   }
 
-  if (!data) {
-    return <Box>Нет данных</Box>;
+  if (!data.length) {
+    return null
   }
 
   return (

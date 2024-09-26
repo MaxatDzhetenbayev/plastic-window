@@ -7,6 +7,7 @@ import {
   WindowCalculator,
   SignUp,
   Profile,
+  Admin,
 } from "../pages";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -16,6 +17,8 @@ import { AdminDetail } from "@/pages/admin-product/AdminDetail";
 import { Payment } from "@/pages/payment/Payment";
 import { PaymentSuccess } from "@/pages/payment/PaymentSuccess";
 import { WorkerPage } from "@/pages/worker/WorkerPage";
+import { RequestsPage } from "@/pages/reqests/RequestsPage";
+import { RequestDetailPage } from "@/pages/request-detail/RequestDetailPage";
 
 function App() {
   const routes = createBrowserRouter([
@@ -59,13 +62,17 @@ function App() {
     {
       element: <AdminLayout />,
       children: [
-        // {
-        //   path: "/admin",
-        //   element: <Admin />,
-        // },
         {
           path: "/admin",
-          element: <AdminRequest />,
+          element: <Admin />,
+        },
+        {
+          path: "/admin/requests",
+          element: <RequestsPage />,
+        },
+        {
+          path: "/admin/requests/:id",
+          element: <RequestDetailPage />,
         },
         {
           path: "/admin/product",
@@ -74,13 +81,6 @@ function App() {
         {
           path: "/admin/product/:id",
           element: <AdminDetail />,
-        },
-        {
-          path: "/admin/worker",
-          element: <WorkerPage />,
-        },
-        {
-          path: "/admin/worker/:id",
         },
       ],
     },

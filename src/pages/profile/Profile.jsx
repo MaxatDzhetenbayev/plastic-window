@@ -90,6 +90,9 @@ export const Profile = () => {
       mutate({ ...data, worker_id, user_request_id });
     };
 
+
+    if (!orderItem.detail) return null;
+
     const navigate = useNavigate();
     return (
       <>
@@ -125,8 +128,8 @@ export const Profile = () => {
                   <strong>Дата установки:</strong>{" "}
                   {orderItem.detail.instalation_date
                     ? new Date(
-                        orderItem.detail.instalation_date
-                      ).toLocaleDateString()
+                      orderItem.detail.instalation_date
+                    ).toLocaleDateString()
                     : "Не назначена"}
                 </Typography>
                 <Typography>
@@ -197,7 +200,7 @@ export const Profile = () => {
                 control={control}
                 render={({ field: { onChange } }) => (
                   <UploadButton onUploadComplete={(url) => onChange(url)}>
-                    Загрущить картинку
+                    Загрузить картинку
                   </UploadButton>
                 )}
               />
@@ -225,11 +228,32 @@ export const Profile = () => {
     },
   });
 
-  const { register, reset, handleSubmit } = useForm();
+  const { register, reset, handleSubmit } = useForm({
+    defaultValues: {
+      name: " ",
+      surname: " ",
+    }
+  });
 
   useEffect(() => {
     reset(userProfile);
   }, [userProfile]);
+
+  const { mutate: userProfileUpdate } = useMutation({
+    mutationFn: async (data) => {
+      try {
+        const response = await api.patch(`profile/${userProfile.id}`, data, {
+          withCredentials: true,
+        });
+        return response.data;
+      } catch (error) {
+        console.log("Error detail: " + error);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("user-profile");
+    }
+  })
 
   return (
     <Box>
@@ -242,7 +266,7 @@ export const Profile = () => {
             <Typography variant="h6" fontWeight="600">
               Ваши данные
             </Typography>
-            <form onSubmit={handleSubmit((data) => console.log(data))}>	
+            <form onSubmit={handleSubmit((data) => userProfileUpdate(data))}>
               <TextField
                 {...register("name")}
                 label="Имя"

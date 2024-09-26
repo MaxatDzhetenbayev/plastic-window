@@ -25,7 +25,7 @@ export const SignInForm = () => {
   const { mutate } = useMutation({
     mutationFn: loginUser,
     mutationKey: ["fecthLogin"],
-    onSuccess: async () => {
+    onSuccess: async (data) => {
       await queryClient.invalidateQueries(["profile"]);
       navigate("/");
     },

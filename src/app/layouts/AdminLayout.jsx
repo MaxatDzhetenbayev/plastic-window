@@ -50,7 +50,8 @@ export const AdminLayout = () => {
   };
 
   const navigateList = [
-    { title: "Запросы", path: "admin" },
+    { title: "Панель", path: "admin" },
+    { title: "Запросы", path: "admin/requests" },
     { title: "Товары", path: "admin/product" },
   ];
 
@@ -58,7 +59,7 @@ export const AdminLayout = () => {
     if (userRoles.includes("admin")) {
       return navigateList;
     } else if (userRoles.includes("manager") || userRoles.includes("worker")) {
-      return [navigateList[0]];
+      return [navigateList[1]];
     } else return;
   }
 
