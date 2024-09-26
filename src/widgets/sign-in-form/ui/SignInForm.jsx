@@ -1,5 +1,5 @@
+import { queryClient } from "@/app/main";
 import { api } from "@/shared/api";
-import { useAuth } from "@/shared/hooks/useAuth";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import React, { useState } from "react";
@@ -17,7 +17,7 @@ export const SignInForm = () => {
       });
       return data;
     } catch (error) {
-      console.log(error);
+      console.log("Ошибка авторизации:", error.response?.data || error.message);
       throw error;
     }
   };
@@ -26,7 +26,7 @@ export const SignInForm = () => {
     mutationFn: loginUser,
     mutationKey: ["fecthLogin"],
     onSuccess: async () => {
-      await queryClient.invalidateQueries(["login"]);
+      await queryClient.invalidateQueries(["profile"]);
       navigate("/");
     },
   });

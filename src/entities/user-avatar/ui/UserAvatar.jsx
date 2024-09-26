@@ -1,4 +1,4 @@
-import { logoutRequest } from "@/features/auth/api/auth";
+import { useLogout } from "@/features/auth/api/auth";
 import { Avatar, Menu, MenuItem, Typography } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -7,13 +7,15 @@ export const UserAvatar = ({ avatarImage }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
+  const { mutate: logoutRequest } = useLogout();
+
   const menuList = [
     {
       to: "/profile",
-      title: "Profile",
+      title: "Профиль",
     },
     {
-      title: "Logout",
+      title: "Выйти",
       callback: logoutRequest,
     },
   ];

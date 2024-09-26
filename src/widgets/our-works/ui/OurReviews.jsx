@@ -13,7 +13,7 @@ import { backgroundFileUrl } from "@/shared/constants";
 
 export const OurReviews = () => {
   const { data, isLoading } = useQuery({
-    queryKey: "reviews",
+    queryKey: ["reviews"],
     queryFn: async () => {
       try {
         const response = await api.get("user-reviews", {
@@ -27,15 +27,13 @@ export const OurReviews = () => {
     },
   });
 
-
   if (isLoading) {
-    return <Box>Loading</Box>
+    return <Box>Loading</Box>;
   }
 
   if (!data) {
-    return <Box>Нет данных</Box>
+    return <Box>Нет данных</Box>;
   }
-
 
   return (
     <Container sx={{ padding: "30px 0px" }}>

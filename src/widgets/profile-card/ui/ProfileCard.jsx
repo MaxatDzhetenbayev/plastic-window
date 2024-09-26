@@ -5,9 +5,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 export const ProfileCard = () => {
   const [user, success] = useAuth();
-
-
-  // const [user, useEffect] = useState({})
+  console.log(user);
 
   return (
     <Box>

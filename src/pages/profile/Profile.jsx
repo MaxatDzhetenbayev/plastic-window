@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { api } from "@/shared/api";
@@ -215,6 +215,22 @@ export const Profile = () => {
     );
   };
 
+  const { data: userProfile } = useQuery({
+    queryKey: ["user-profile"],
+    queryFn: async () => {
+      const response = await api.get(`profile/find/by-user`, {
+        withCredentials: true,
+      });
+      return response.data;
+    },
+  });
+
+  const { register, reset, handleSubmit } = useForm();
+
+  useEffect(() => {
+    reset(userProfile);
+  }, [userProfile]);
+
   return (
     <Box>
       <Container>
@@ -222,21 +238,45 @@ export const Profile = () => {
           <Typography variant="h4" sx={{ marginTop: "50px" }}>
             Личный кабинет
           </Typography>
+          <Box>
+            <Typography variant="h6" fontWeight="600">
+              Ваши данные
+            </Typography>
+            <form onSubmit={handleSubmit((data) => console.log(data))}>	
+              <TextField
+                {...register("name")}
+                label="Имя"
+                fullWidth
+                sx={{ marginTop: "20px" }}
+              />
+              <TextField
+                {...register("surname")}
+                label="Фамилия"
+                fullWidth
+                sx={{ marginTop: "20px" }}
+              />
+              <Button
+                variant="contained"
+                type="submit"
+                sx={{ width: "100%", mt: "20px" }}
+              >
+                Сохранить
+              </Button>
+            </form>
+          </Box>
           <Box
             sx={{
-              borderRadius: "2px",
-              border: `1px solid #dddddd`,
               marginTop: "20px",
             }}
           >
+            <Typography variant="h6" fontWeight="600">
+              Ваши заказы
+            </Typography>
             {isLoading ? (
               <Typography>Загрузка...</Typography>
             ) : (
               <Table>
                 <TableHead>
-                  <TableRow>
-                    <TableCell>Мои заказы</TableCell>
-                  </TableRow>
                   <TableRow>
                     <TableCell />
                     <TableCell>ID Заказа</TableCell>

@@ -43,17 +43,7 @@ export const Hero = () => {
             }}
           >
             Пластиковые окна в Семее <br />
-            напрямую от производителя <br />
-            <Typography
-              variant="h3"
-              sx={{
-                fontWeight: "600",
-                color: "#fff",
-                fontSize: "1em",
-              }}
-            >
-              с гарантией 10 лет!
-            </Typography>
+            напрямую от Завода Окон <br />с гарантией 10 лет!
           </Typography>
           <Link
             to="calculator"

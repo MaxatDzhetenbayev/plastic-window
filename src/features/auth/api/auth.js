@@ -12,28 +12,26 @@ export const logoutRequest = async () => {
       }
     );
     localStorage.removeItem("user");
+    console.log("logoutRequest");
   } catch (error) {
-    console.error("Error signing out", error);
+    throw ("Error signing out", error);
   }
 };
 
 export const useLogout = () => {
-  const alm = 12;
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const { mutate } = useMutation({
+  return useMutation({
     mutationFn: logoutRequest,
-    mutationKey: "login",
+    mutationKey: ["logout"],
     onSuccess: () => {
-      queryClient.clear();
-      queryClient.invalidateQueries("login");
+      queryClient.removeQueries(["profile"]);
+      queryClient.invalidateQueries(["profile"]);
       navigate("/sign-in");
     },
     onError: (error) => {
       console.error("Error signing out", error);
     },
   });
-
-  return mutate;
 };

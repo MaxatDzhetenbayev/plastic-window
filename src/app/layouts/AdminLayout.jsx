@@ -21,7 +21,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 const drawerWidth = 240;
 
 export const AdminLayout = () => {
-  const [user] = useAuth();
+  const [user, isSuccess] = useAuth();
 
   useLayoutEffect(() => {
     if (user?.roles.includes("user")) {
@@ -54,22 +54,33 @@ export const AdminLayout = () => {
     { title: "Товары", path: "admin/product" },
   ];
 
+  function getNavigationByRole(userRoles) {
+    if (userRoles.includes("admin")) {
+      return navigateList;
+    } else if (userRoles.includes("manager") || userRoles.includes("worker")) {
+      return [navigateList[0]];
+    } else return;
+  }
+
   const drawer = (
     <div>
       <Toolbar />
       <Divider />
-      <List>
-        {navigateList.map(({ title, path }, index) => (
-          <ListItem key={title} disablePadding>
-            <ListItemButton onClick={() => navigate(path)}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+      {isSuccess && (
+        <List>
+          {getNavigationByRole(user?.roles)?.map(({ title, path }, index) => (
+            <ListItem key={title} disablePadding>
+              <ListItemButton onClick={() => navigate(path)}>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                </ListItemIcon>
+                <ListItemText primary={title} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      )}
+
       <Divider />
     </div>
   );
