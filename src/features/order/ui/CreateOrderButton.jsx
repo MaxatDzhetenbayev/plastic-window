@@ -11,12 +11,14 @@ import React, { useState } from "react";
 import { Modal } from "@components/index";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 import { api } from "@/shared/api";
 import { useForm, Controller } from "react-hook-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const CreateOrderButton = ({ itemId }) => {
   const [open, setOpen] = useState(false);
+  const [workerId, setWorkerId] = useState(null);
   console.log(itemId);
   const {
     register,
@@ -28,6 +30,7 @@ export const CreateOrderButton = ({ itemId }) => {
   const handleOpen = () => {
     setOpen(true);
   };
+  console.log(workerId);
 
   const handleClose = () => {
     setOpen(false);
@@ -48,6 +51,35 @@ export const CreateOrderButton = ({ itemId }) => {
       withCredentials: true,
     });
     return response.data;
+  };
+
+  const { data: workerBusyTimes } = useQuery({
+    queryKey: ["worker-busy-times", workerId],
+    queryFn: async () => {
+      const response = await api.get(
+        `user-requests/workers/${workerId}/busy-times`
+      );
+
+      return response.data;
+    },
+    enabled: !!workerId,
+  });
+
+  const isTimeBlocked = (time) => {
+    if (!time || !workerBusyTimes) return false;
+    const currentDate = dayjs(time).format("YYYY-MM-DD");
+    const currentHour = time.$H;
+
+    const blockedDate = workerBusyTimes.find((item) => {
+      const instalationDate = dayjs(item.detail.instalation_date).format(
+        "YYYY-MM-DD"
+      );
+      return instalationDate === currentDate;
+    });
+
+    return blockedDate
+      ? dayjs(blockedDate.detail.instalation_date).hour() === currentHour
+      : false;
   };
 
   const { mutate } = useMutation({
@@ -131,59 +163,66 @@ export const CreateOrderButton = ({ itemId }) => {
                 }}
               >
                 {workers?.map((worker) => {
-                  console.log(field.value);
                   return (
-                    <ToggleButton
-                      key={worker.id}
-                      value={worker.id}
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "10px",
-                        bgcolor:
-                          field.value == worker.id ? "primary.main" : "default",
-                        color: field.value == worker.id ? "white" : "black",
-                        "&:hover": {
+                    <>
+                      <ToggleButton
+                        key={worker.id}
+                        value={worker.id}
+                        onClick={() => setWorkerId(worker.id)}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "10px",
                           bgcolor:
                             field.value == worker.id
-                              ? "primary.dark"
-                              : "grey.300", // Изменение цвета при наведении
-                        },
-                      }}
-                    >
-                      <Typography variant="body1">
-                        {worker?.profile?.name + " " + worker?.profile?.surname}
-                      </Typography>
-                      <Rating
-                        name="disabled"
-                        value={Number(worker.rating)}
-                        readOnly
-                      />
-                    </ToggleButton>
+                              ? "primary.main"
+                              : "default",
+                          color: field.value == worker.id ? "white" : "black",
+                          "&:hover": {
+                            bgcolor:
+                              field.value == worker.id
+                                ? "primary.dark"
+                                : "grey.300", // Изменение цвета при наведении
+                          },
+                        }}
+                      >
+                        <Typography variant="body1">
+                          {worker?.profile?.name +
+                            " " +
+                            worker?.profile?.surname}
+                        </Typography>
+                        <Rating
+                          name="disabled"
+                          value={Number(worker.rating)}
+                          readOnly
+                        />
+                      </ToggleButton>
+                    </>
                   );
                 })}
               </ToggleButtonGroup>
             )}
           />
-
-          <Controller
-            name="measurement_date"
-            control={control}
-            defaultValue={null}
-            render={({ field }) => (
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DateTimePicker
-                  label="Дата замера"
-                  {...field}
-                  views={["year", "month", "day", "hours"]}
-                  shouldDisableTime={(time) => {
-                    const hours = time.$H;
-                    return hours < 9 || hours >= 18;
-                  }}
-                />
-              </LocalizationProvider>
-            )}
-          />
+          {workerId && (
+            <Controller
+              name="measurement_date"
+              control={control}
+              defaultValue={null}
+              render={({ field }) => (
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DateTimePicker
+                    label="Дата замера"
+                    {...field}
+                    views={["year", "month", "day", "hours"]}
+                    shouldDisableTime={(time) => {
+                      const hours = time.$H;
+                      return hours < 9 || hours >= 18 || isTimeBlocked(time);
+                    }}
+                  />
+                </LocalizationProvider>
+              )}
+            />
+          )}
 
           <Button variant="contained" type="submit">
             Заказать
