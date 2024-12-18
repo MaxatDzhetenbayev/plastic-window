@@ -1,7 +1,7 @@
 import axios from "axios";
 // import jwt from "jsonwebtoken";
 
-const BACKEND_APP_API_URL = "http://localhost:3000/";
+const BACKEND_APP_API_URL = "https://back.alka-plast.kz";
 
 export const api = axios.create({
   baseURL: BACKEND_APP_API_URL,
